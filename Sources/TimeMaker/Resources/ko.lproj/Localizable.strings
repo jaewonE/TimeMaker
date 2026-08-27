@@ -1,0 +1,78 @@
+"app.name" = "TimeMaker";
+
+"action.close" = "닫기";
+"action.pause" = "타이머 일시정지";
+"action.quit" = "TimeMaker 종료";
+"action.start" = "타이머 시작";
+
+"nav.analytics" = "분석";
+"nav.settings" = "설정";
+
+"menu.open" = "메뉴 열기";
+"menu.timer" = "타이머";
+"menu.minutes" = "%d분";
+
+"label.placeholder" = "Work";
+"label.accessibility" = "현재 활동 라벨";
+
+"timer.minutes" = "분";
+"timer.seconds" = "초";
+"timer.remaining" = "남은 시간";
+"timer.scrollHint" = "위아래로 스크롤하여 조절";
+"timer.runningHint" = "시간을 변경하려면 타이머를 완료하십시오";
+
+"progress.today" = "오늘의 집중 진행도";
+"progress.value" = "%d시간 %d분";
+
+"status.accessibility" = "TimeMaker 남은 시간";
+
+"notification.completed.title" = "타이머 완료";
+"notification.completed.body" = "%@ 타이머가 완료되었습니다.";
+
+"sidebar.localData" = "데이터는 이 Mac에만 저장됩니다.";
+
+"analytics.title" = "한눈에 보는 집중 기록";
+"analytics.subtitle" = "완료한 세션을 이 Mac에서 안전하게 분석합니다.";
+"analytics.today" = "오늘";
+"analytics.thisWeek" = "이번 주";
+"analytics.streak" = "연속 기록";
+"analytics.sessions.value" = "%d개 세션";
+"analytics.average.value" = "활동일 평균 %@";
+"analytics.days.value" = "%d일";
+"analytics.noActivity" = "아직 활동 없음";
+"analytics.lastSevenDays" = "최근 7일";
+"analytics.activities" = "활동";
+"analytics.focus" = "집중";
+"analytics.recentSessions" = "최근 세션";
+"analytics.empty.title" = "아직 완료한 세션이 없습니다";
+"analytics.empty.description" = "타이머를 완료하면 집중 기록이 쌓입니다.";
+
+"settings.title" = "설정";
+"settings.subtitle" = "집중 방식에 맞게 TimeMaker를 조정합니다.";
+"settings.timer.title" = "타이머";
+"settings.system.title" = "시스템";
+"settings.appearance.title" = "화면";
+"settings.scrollStep" = "스크롤 단위";
+"settings.scrollStep.description" = "한 번의 스크롤로 변경되는 분 또는 초입니다.";
+"settings.minutes.value" = "%d";
+"settings.hideOnStart" = "타이머 시작 시 윈도우 숨기기";
+"settings.hideOnStart.description" = "시작 후 메뉴바의 실시간 카운트다운만 남깁니다.";
+"settings.launchAtLogin" = "Mac 로그인 시 열기";
+"settings.launchAtLogin.description" = "이 Mac에 로그인하면 TimeMaker를 자동으로 시작합니다.";
+"settings.notifications" = "알림 허용";
+"settings.notifications.description" = "타이머 완료 시 소리 없는 macOS 알림을 표시합니다.";
+"settings.notifications.authorized" = "macOS 알림이 허용되었습니다.";
+"settings.notifications.denied" = "시스템 설정에서 TimeMaker 알림이 비활성화되어 있습니다.";
+"settings.notifications.notDetermined" = "macOS 알림 권한이 아직 결정되지 않았습니다.";
+"settings.notifications.unknown" = "알림 권한 상태를 확인할 수 없습니다.";
+"settings.darkMode" = "다크 모드";
+"settings.darkMode.description" = "시스템 설정을 따르거나 화면 모드를 고정합니다.";
+"settings.appearance.system" = "시스템";
+"settings.appearance.light" = "Light";
+"settings.appearance.dark" = "Dark";
+"settings.login.enabled" = "로그인 시 TimeMaker가 열리도록 등록되었습니다.";
+"settings.login.disabled" = "로그인 시 TimeMaker가 열리지 않습니다.";
+"settings.login.requiresApproval" = "시스템 설정 › 일반 › 로그인 항목에서 TimeMaker를 허용하십시오.";
+"settings.login.notFound" = "macOS가 설치된 TimeMaker 앱을 찾지 못했습니다.";
+"settings.login.unknown" = "로그인 항목 상태를 확인할 수 없습니다.";
+"settings.login.requiresApp" = "설치된 앱에서 로그인 실행을 설정할 수 있습니다.";

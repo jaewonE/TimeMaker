@@ -1,0 +1,78 @@
+"app.name" = "TimeMaker";
+
+"action.close" = "Close";
+"action.pause" = "Pause timer";
+"action.quit" = "Quit TimeMaker";
+"action.start" = "Start timer";
+
+"nav.analytics" = "Analytics";
+"nav.settings" = "Settings";
+
+"menu.open" = "Open menu";
+"menu.timer" = "Timer";
+"menu.minutes" = "%d min";
+
+"label.placeholder" = "Work";
+"label.accessibility" = "Current activity label";
+
+"timer.minutes" = "Minutes";
+"timer.seconds" = "Seconds";
+"timer.remaining" = "Time remaining";
+"timer.scrollHint" = "Scroll up or down to adjust";
+"timer.runningHint" = "Pause or finish the timer before changing its duration";
+
+"progress.today" = "Today's focus progress";
+"progress.value" = "%d hours %d minutes";
+
+"status.accessibility" = "TimeMaker time remaining";
+
+"notification.completed.title" = "Timer complete";
+"notification.completed.body" = "%@ is complete.";
+
+"sidebar.localData" = "Your data stays on this Mac.";
+
+"analytics.title" = "Your focus, at a glance";
+"analytics.subtitle" = "Completed sessions are summarized locally on your Mac.";
+"analytics.today" = "Today";
+"analytics.thisWeek" = "This week";
+"analytics.streak" = "Current streak";
+"analytics.sessions.value" = "%d sessions";
+"analytics.average.value" = "%@ active-day avg";
+"analytics.days.value" = "%d days";
+"analytics.noActivity" = "No activity yet";
+"analytics.lastSevenDays" = "Last 7 days";
+"analytics.activities" = "Activities";
+"analytics.focus" = "focus";
+"analytics.recentSessions" = "Recent sessions";
+"analytics.empty.title" = "No sessions yet";
+"analytics.empty.description" = "Complete a timer to start building your focus history.";
+
+"settings.title" = "Settings";
+"settings.subtitle" = "Make TimeMaker fit the way you focus.";
+"settings.timer.title" = "Timer";
+"settings.system.title" = "System";
+"settings.appearance.title" = "Appearance";
+"settings.scrollStep" = "Scroll step";
+"settings.scrollStep.description" = "Minutes or seconds changed by one scroll gesture.";
+"settings.minutes.value" = "%d";
+"settings.hideOnStart" = "Hide window when timer starts";
+"settings.hideOnStart.description" = "Keep only the live countdown in the menu bar after starting.";
+"settings.launchAtLogin" = "Open at login";
+"settings.launchAtLogin.description" = "Start TimeMaker automatically when you sign in to this Mac.";
+"settings.notifications" = "Allow notifications";
+"settings.notifications.description" = "Show a silent native notification when a timer finishes.";
+"settings.notifications.authorized" = "macOS notifications are authorized.";
+"settings.notifications.denied" = "Notifications are disabled for TimeMaker in System Settings.";
+"settings.notifications.notDetermined" = "macOS has not decided notification permission yet.";
+"settings.notifications.unknown" = "Notification permission status is unavailable.";
+"settings.darkMode" = "Color mode";
+"settings.darkMode.description" = "Follow the system appearance or choose a fixed mode.";
+"settings.appearance.system" = "System";
+"settings.appearance.light" = "Light";
+"settings.appearance.dark" = "Dark";
+"settings.login.enabled" = "TimeMaker is registered to open at login.";
+"settings.login.disabled" = "TimeMaker will not open at login.";
+"settings.login.requiresApproval" = "Approve TimeMaker in System Settings › General › Login Items.";
+"settings.login.notFound" = "macOS could not locate the installed TimeMaker app.";
+"settings.login.unknown" = "Login-item status is unavailable.";
+"settings.login.requiresApp" = "Login launch becomes available from the installed app.";
