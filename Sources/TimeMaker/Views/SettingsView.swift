@@ -15,21 +15,20 @@ struct SettingsView: View {
                         title: "settings.scrollStep",
                         description: "settings.scrollStep.description"
                     ) {
-                        Stepper(
-                            value: Binding(
-                                get: { settings.scrollStep },
-                                set: settings.updateScrollStep
-                            ),
-                            in: 1...60
-                        ) {
+                        HStack(spacing: 8) {
                             Text(String(
                                 format: NSLocalizedString("settings.minutes.value", comment: ""),
                                 settings.scrollStep
                             ))
                             .monospacedDigit()
-                            .frame(minWidth: 46, alignment: .trailing)
+                            .frame(width: 34, alignment: .trailing)
+
+                            Stepper("", value: Binding(
+                                get: { settings.scrollStep },
+                                set: settings.updateScrollStep
+                            ), in: 1...60)
+                            .labelsHidden()
                         }
-                        .labelsHidden()
                     }
 
                     Divider()
@@ -109,6 +108,21 @@ struct SettingsView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+
+                    Divider()
+
+                    SettingRow(
+                        title: "settings.notificationsSound",
+                        description: "settings.notificationsSound.description"
+                    ) {
+                        Toggle("", isOn: Binding(
+                            get: { settings.notificationSoundEnabled },
+                            set: settings.updateNotificationSoundEnabled
+                        ))
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                        .disabled(!settings.notificationsEnabled)
                     }
                 }
 

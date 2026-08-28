@@ -242,7 +242,8 @@ final class TimerStore: ObservableObject {
         history.addSession(session)
         notificationService.deliverCompletion(
             label: label,
-            enabled: settings.notificationsEnabled
+            enabled: settings.notificationsEnabled,
+            soundEnabled: settings.notificationSoundEnabled
         )
 
         resetActiveTimerState()

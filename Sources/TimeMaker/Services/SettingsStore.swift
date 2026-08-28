@@ -14,6 +14,7 @@ final class SettingsStore: ObservableObject {
     @Published private(set) var defaultLabel: String
     @Published private(set) var appearance: AppearancePreference
     @Published private(set) var notificationsEnabled: Bool
+    @Published private(set) var notificationSoundEnabled: Bool
     @Published private(set) var loginItemStatusText: String = ""
     @Published private(set) var notificationStatusText: String = ""
 
@@ -25,6 +26,7 @@ final class SettingsStore: ObservableObject {
         static let defaultLabel = "settings.defaultLabel"
         static let appearance = "settings.appearance"
         static let notificationsEnabled = "settings.notificationsEnabled"
+        static let notificationSoundEnabled = "settings.notificationSoundEnabled"
     }
 
     private let defaults: UserDefaults
@@ -44,7 +46,8 @@ final class SettingsStore: ObservableObject {
             Key.countCancelledTimerTime: false,
             Key.defaultLabel: LabelNormalization.fallbackLabel,
             Key.appearance: AppearancePreference.system.rawValue,
-            Key.notificationsEnabled: true
+            Key.notificationsEnabled: true,
+            Key.notificationSoundEnabled: false
         ])
 
         scrollStep = min(max(defaults.integer(forKey: Key.scrollStep), 1), 60)
@@ -58,11 +61,15 @@ final class SettingsStore: ObservableObject {
             rawValue: defaults.string(forKey: Key.appearance) ?? "system"
         ) ?? .system
         notificationsEnabled = defaults.bool(forKey: Key.notificationsEnabled)
+        notificationSoundEnabled = defaults.bool(forKey: Key.notificationSoundEnabled)
     }
 
     func prepareSystemIntegrations() {
         applyAppearance()
-        notificationService.requestAuthorizationIfNeeded(enabled: notificationsEnabled) { [weak self] in
+        notificationService.requestAuthorizationIfNeeded(
+            enabled: notificationsEnabled,
+            soundEnabled: notificationSoundEnabled
+        ) { [weak self] in
             self?.refreshNotificationStatus()
         }
         synchronizeLoginItem()
@@ -103,7 +110,21 @@ final class SettingsStore: ObservableObject {
     func updateNotificationsEnabled(_ enabled: Bool) {
         notificationsEnabled = enabled
         defaults.set(enabled, forKey: Key.notificationsEnabled)
-        notificationService.requestAuthorizationIfNeeded(enabled: enabled) { [weak self] in
+        notificationService.requestAuthorizationIfNeeded(
+            enabled: enabled,
+            soundEnabled: notificationSoundEnabled
+        ) { [weak self] in
+            self?.refreshNotificationStatus()
+        }
+    }
+
+    func updateNotificationSoundEnabled(_ enabled: Bool) {
+        notificationSoundEnabled = enabled
+        defaults.set(enabled, forKey: Key.notificationSoundEnabled)
+        notificationService.requestAuthorizationIfNeeded(
+            enabled: notificationsEnabled,
+            soundEnabled: enabled
+        ) { [weak self] in
             self?.refreshNotificationStatus()
         }
     }

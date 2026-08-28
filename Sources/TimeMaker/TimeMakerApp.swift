@@ -61,6 +61,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             menuBar.showWorkspace(.analytics)
         } else if CommandLine.arguments.contains("--show-settings") {
             menuBar.showWorkspace(.settings)
+        } else {
+            menuBar.showMainPanel()
         }
     }
 

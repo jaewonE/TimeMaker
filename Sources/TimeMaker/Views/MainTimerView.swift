@@ -48,11 +48,8 @@ struct MainTimerView: View {
                 timerDisplay
                     .padding(.top, 2)
 
-                TodayProgressDots(totalSeconds: timer.todayProgressSeconds())
-                    .padding(.top, 4)
-
                 startPauseButton
-                    .padding(.top, 22)
+                    .padding(.top, 40)
 
                 Spacer(minLength: 0)
             }
@@ -69,6 +66,12 @@ struct MainTimerView: View {
         .frame(width: 380, height: 246)
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(alignment: .topLeading) {
+            TodayProgressDots(totalSeconds: timer.todayProgressSeconds())
+                .padding(.leading, 18)
+                .padding(.top, 148)
+                .allowsHitTesting(false)
+        }
         .onHover { isHovered = $0 }
         .onAppear(perform: endLabelEditing)
         .onChange(of: presentation.focusResetToken) { _, _ in
@@ -280,7 +283,10 @@ struct MainTimerView: View {
                 String(format: "%02d", timer.displayedMinutes),
                 accessibilityLabel: "timer.minutes"
             ) { direction in
-                timer.adjustMinutes(direction: direction, step: settings.scrollStep)
+                timer.adjustMinutes(
+                    direction: direction,
+                    step: TimerScrollSensitivity.minutesStep(from: settings.scrollStep)
+                )
             }
 
             Text(":")
@@ -292,7 +298,10 @@ struct MainTimerView: View {
                 String(format: "%02d", timer.displayedSeconds),
                 accessibilityLabel: "timer.seconds"
             ) { direction in
-                timer.adjustSeconds(direction: direction, step: settings.scrollStep)
+                timer.adjustSeconds(
+                    direction: direction,
+                    step: TimerScrollSensitivity.secondsStep(from: settings.scrollStep)
+                )
             }
         }
         .lineLimit(1)

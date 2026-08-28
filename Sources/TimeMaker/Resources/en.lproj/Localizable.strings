@@ -55,7 +55,7 @@
 "settings.system.title" = "System";
 "settings.appearance.title" = "Appearance";
 "settings.scrollStep" = "Scroll step";
-"settings.scrollStep.description" = "Minutes or seconds changed by one scroll gesture.";
+"settings.scrollStep.description" = "Base step per scroll gesture; minutes use 4× and seconds use 2× this value.";
 "settings.minutes.value" = "%d";
 "settings.hideOnStart" = "Hide window when timer starts";
 "settings.hideOnStart.description" = "Keep only the live countdown in the menu bar after starting.";
@@ -66,7 +66,9 @@
 "settings.launchAtLogin" = "Open at login";
 "settings.launchAtLogin.description" = "Start TimeMaker automatically when you sign in to this Mac.";
 "settings.notifications" = "Allow notifications";
-"settings.notifications.description" = "Show a silent native notification when a timer finishes.";
+"settings.notifications.description" = "Show a native macOS notification when a timer finishes. Sound is configured separately.";
+"settings.notificationsSound" = "Allow notification sound";
+"settings.notificationsSound.description" = "Use your Mac's default notification sound when a timer finishes.";
 "settings.notifications.authorized" = "macOS notifications are authorized.";
 "settings.notifications.denied" = "Notifications are disabled for TimeMaker in System Settings.";
 "settings.notifications.notDetermined" = "macOS has not decided notification permission yet.";

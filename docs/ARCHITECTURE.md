@@ -13,7 +13,7 @@ TimeMaker is a menu-bar-only app (`LSUIElement`) composed of native macOS framew
 
 ## Timer state flow
 
-`TimerStore` is the single source of truth for idle, running, and paused state. A running timer stores a deadline instead of decrementing a counter as its authoritative time source. The 250 ms UI ticker derives the displayed whole seconds from that deadline. This prevents drift and lets the timer recover after display sleep, system sleep, or process restart.
+`TimerStore` is the single source of truth for idle, running, and paused state. A running timer stores a deadline instead of decrementing a counter as its authoritative time source. The 250 ms UI ticker derives the displayed whole seconds from that deadline. This prevents drift and lets the timer recover after display sleep, system sleep, or process restart. Minute adjustment is clamped at the supported bounds, while the UI applies distinct 4× minute and 2× second scroll sensitivities from the configured base step.
 
 The persisted state contains:
 
@@ -38,7 +38,7 @@ Label identity normalizes whitespace, hyphens, underscores, and English case. Au
 ## System integrations
 
 - `SMAppService.mainApp` registers or unregisters TimeMaker as a login item.
-- `UNUserNotificationCenter` requests alert-only authorization and deliberately omits sound.
+- `UNUserNotificationCenter` requests sound authorization only when the optional sound setting is enabled and uses the Mac default sound for completed timers.
 - `NSAppearance` applies System, Light, or Dark selection across both windows.
 
 ## Packaging

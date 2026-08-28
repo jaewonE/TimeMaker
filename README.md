@@ -9,19 +9,19 @@ TimeMaker is a native macOS Pomodoro timer that lives in the menu bar. It is bui
 - Live `MM:SS` countdown in the menu bar, including durations above one hour such as `90:00`.
 - Compact independent timer window with the original single custom close control.
 - Activity labels with frequency-ranked autocomplete from previously used labels, flexible separator/case matching, and keyboard selection.
-- Scroll-adjustable minutes and seconds with a configurable step from 1 to 60.
+- Scroll-adjustable minutes and seconds with a visible configurable base step from 1 to 60 (minutes 4×, seconds 2×).
 - Presets for 5, 10, 15, 30, 60, and 90 minutes.
 - Pause/resume support and deadline-based timing that remains accurate across sleep and app restarts.
-- Today progress dots: each full dot is one hour, while a dashed partial dot shows the remaining minutes as an angle.
+- Today progress dots: each full dot is one hour, with up to eight vertical rows in a left-side overlay grid.
 - Local analytics with seven-day focus bars, activity breakdown, streaks, summaries, and recent sessions.
 - System/light/dark appearance options.
-- Native macOS login-item registration and silent completion notifications.
+- Native macOS login-item registration and completion notifications with an optional default Mac sound.
 - English and Korean interface localizations.
 
 ## Requirements
 
 - macOS 14 Sonoma or later
-- The packaged `v1.0.1` artifact is built for Apple Silicon (`arm64`)
+- The packaged `v1.0.2` artifact is built for Apple Silicon (`arm64`)
 - Xcode 15.3 or later and Swift 5.10 or later when building from source
 
 ## Install
@@ -30,18 +30,18 @@ The locally built app is installed at `/Applications/TimeMaker.app`.
 
 For a release download:
 
-1. Download `TimeMaker-1.0.1-macOS-arm64.zip` from the private GitHub release.
+1. Download `TimeMaker-1.0.2-macOS-arm64.zip` from the private GitHub release.
 2. Extract it and move `TimeMaker.app` to `/Applications`.
 3. On the first launch, Control-click the app and choose **Open** if Gatekeeper asks for confirmation.
-4. Allow notifications when macOS asks. TimeMaker sends banners without sound.
+4. Allow notifications when macOS asks. Sound remains optional and uses your Mac's default notification sound.
 
 The release is ad-hoc signed because no Apple Developer signing identity is available on the build Mac. It is code-signed and verified locally, but it is not notarized by Apple.
 
 ## Use
 
-- Left-click the menu-bar countdown to show or hide the timer panel.
+- The timer window opens when TimeMaker launches; left-click the menu-bar countdown to show or hide it later.
 - Right-click the countdown to start, pause, or resume the timer.
-- Scroll over the minute or second value while the timer is idle to change it.
+- Scroll over the minute or second value while the timer is idle to change it. Minutes stop at the minimum and maximum instead of wrapping.
 - Use the reset button beside Analytics to cancel an active timer and return it to its configured duration.
 - Type an activity such as `work`, `Reading`, or `Writing`; matching labels appear below the field. Use Up/Down and Return to select a match, or click one with the mouse.
 - Press Play to start. When **Hide window when timer starts** is enabled, the panel closes and the menu-bar countdown remains visible.
@@ -53,13 +53,14 @@ TimeMaker keeps the last activity label after a timer completes. If an empty lab
 
 | Setting | Default | Range / choices |
 | --- | --- | --- |
-| Scroll step | 5 | 1–60 |
+| Scroll base step | 5 | 1–60; minutes use 4×, seconds use 2× |
 | Open at login | On | On / Off |
 | Hide window when timer starts | On | On / Off |
 | Include cancelled time in analytics | Off | On / Off |
 | Default label | `work` | Any non-empty label |
 | Color mode | System | System / Light / Dark |
-| Allow notifications | On | On / Off; silent native notification |
+| Allow notifications | On | On / Off; native macOS notification |
+| Allow notification sound | Off | On / Off; Mac default notification sound |
 
 ## Data and privacy
 

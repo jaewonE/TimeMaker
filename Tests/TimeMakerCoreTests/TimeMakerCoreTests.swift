@@ -8,14 +8,18 @@ final class TimeMakerCoreTests: XCTestCase {
         XCTAssertEqual(DurationFormatting.timer(DurationFormatting.maximumSeconds + 100), "1440:00")
     }
 
-    func testMinuteScrollingUsesConfiguredStepAndWraps() {
+    func testMinuteScrollingUsesConfiguredStepAndStopsAtBounds() {
         XCTAssertEqual(
             TimerAdjustment.minutes(in: 30 * 60, direction: .increase, step: 5),
             35 * 60
         )
         XCTAssertEqual(
             TimerAdjustment.minutes(in: 2 * 60, direction: .decrease, step: 5),
-            1_438 * 60
+            0
+        )
+        XCTAssertEqual(
+            TimerAdjustment.minutes(in: 30, direction: .decrease, step: 5),
+            30
         )
         XCTAssertEqual(
             TimerAdjustment.minutes(
@@ -23,8 +27,36 @@ final class TimeMakerCoreTests: XCTestCase {
                 direction: .increase,
                 step: 1
             ),
-            0
+            DurationFormatting.maximumSeconds
         )
+    }
+
+    func testScrollSensitivityUsesDifferentMinuteAndSecondMultipliers() {
+        XCTAssertEqual(TimerScrollSensitivity.minutesStep(from: 5), 20)
+        XCTAssertEqual(TimerScrollSensitivity.secondsStep(from: 5), 10)
+        XCTAssertEqual(
+            TimerAdjustment.minutes(
+                in: 30 * 60,
+                direction: .increase,
+                step: TimerScrollSensitivity.minutesStep(from: 5)
+            ),
+            50 * 60
+        )
+        XCTAssertEqual(
+            TimerAdjustment.seconds(
+                in: 30 * 60,
+                direction: .increase,
+                step: TimerScrollSensitivity.secondsStep(from: 5)
+            ),
+            (30 * 60) + 10
+        )
+    }
+
+    func testProgressDotsUseAtMostEightVerticalRows() {
+        XCTAssertEqual(ProgressDotLayout.rowCount(for: 24), 8)
+        XCTAssertEqual(ProgressDotLayout.columnCount(for: 24), 3)
+        XCTAssertEqual(ProgressDotLayout.rowCount(for: 9), 8)
+        XCTAssertEqual(ProgressDotLayout.columnCount(for: 9), 2)
     }
 
     func testSecondScrollingWrapsWithoutChangingMinutes() {

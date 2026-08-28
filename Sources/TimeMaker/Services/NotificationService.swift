@@ -7,12 +7,20 @@ final class NotificationService: NSObject, UNUserNotificationCenterDelegate {
         UNUserNotificationCenter.current().delegate = self
     }
 
-    func requestAuthorizationIfNeeded(enabled: Bool, completion: (() -> Void)? = nil) {
+    func requestAuthorizationIfNeeded(
+        enabled: Bool,
+        soundEnabled: Bool = false,
+        completion: (() -> Void)? = nil
+    ) {
         guard enabled else {
             completion?()
             return
         }
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert]) { _, error in
+        var options: UNAuthorizationOptions = [.alert]
+        if soundEnabled {
+            options.insert(.sound)
+        }
+        UNUserNotificationCenter.current().requestAuthorization(options: options) { _, error in
             if let error {
                 NSLog("TimeMaker notification authorization failed: %@", error.localizedDescription)
             }
@@ -26,7 +34,7 @@ final class NotificationService: NSObject, UNUserNotificationCenterDelegate {
         }
     }
 
-    func deliverCompletion(label: String, enabled: Bool) {
+    func deliverCompletion(label: String, enabled: Bool, soundEnabled: Bool) {
         guard enabled else { return }
 
         let content = UNMutableNotificationContent()
@@ -35,7 +43,7 @@ final class NotificationService: NSObject, UNUserNotificationCenterDelegate {
             format: NSLocalizedString("notification.completed.body", comment: ""),
             label
         )
-        content.sound = nil
+        content.sound = soundEnabled ? .default : nil
 
         let request = UNNotificationRequest(
             identifier: "timer-complete-\(UUID().uuidString)",
@@ -54,6 +62,10 @@ final class NotificationService: NSObject, UNUserNotificationCenterDelegate {
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
-        completionHandler([.banner, .list])
+        var options: UNNotificationPresentationOptions = [.banner, .list]
+        if notification.request.content.sound != nil {
+            options.insert(.sound)
+        }
+        completionHandler(options)
     }
 }

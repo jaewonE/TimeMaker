@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.0.2 — 2026-08-28
+
+### English
+
+- Increased minute-scroll adjustment to 4× and second-scroll adjustment to 2× the configured base step.
+- Made minute adjustment stop at `00:00` and `1440:00` rather than wrapping.
+- Moved today-progress dots to an eight-row maximum grid overlaid at the left of the timer window.
+- Made the timer window open at app launch and restored the visible scroll-step value in Settings.
+- Added an opt-in Mac default notification-sound setting.
+
+### 한국어
+
+- 분 스크롤은 설정 기준값의 4배, 초 스크롤은 2배로 조절 폭을 확대.
+- 분 조절이 `00:00`과 `1440:00`에서 순환하지 않고 멈추도록 변경.
+- 오늘의 진행 도트를 타이머 창 좌측의 최대 8행 오버레이 그리드로 이동.
+- 앱 실행 시 타이머 창을 열고, 설정에서 스크롤 기준 숫자가 보이도록 수정.
+- Mac 기본 알림음을 사용할지 선택하는 설정 추가.
+
 ## 1.0.1 — 2026-08-28
 
 ### English
