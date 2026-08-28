@@ -17,23 +17,35 @@ struct SettingsView: View {
 
                 SettingsGroup(title: "settings.timer.title") {
                     SettingRow(
-                        title: "settings.scrollDistance",
-                        description: "settings.scrollDistance.description"
+                        title: "settings.scrollStep",
+                        description: "settings.scrollStep.description"
                     ) {
                         HStack(spacing: 8) {
                             Text(String(
-                                format: NSLocalizedString("settings.scrollDistance.value", comment: ""),
-                                settings.scrollDistance
+                                format: NSLocalizedString("settings.scrollStep.value", comment: ""),
+                                settings.scrollStep
                             ))
                             .monospacedDigit()
-                            .frame(width: 38, alignment: .trailing)
+                            .frame(width: 34, alignment: .trailing)
 
                             Stepper("", value: Binding(
-                                get: { settings.scrollDistance },
-                                set: settings.updateScrollDistance
+                                get: { settings.scrollStep },
+                                set: settings.updateScrollStep
                             ), in: 1...60)
                             .labelsHidden()
                         }
+                    }
+
+                    Divider()
+
+                    SettingRow(
+                        title: "settings.scrollSensitivity",
+                        description: "settings.scrollSensitivity.description"
+                    ) {
+                        ScrollSensitivitySlider(sensitivity: Binding(
+                            get: { settings.scrollSensitivity },
+                            set: settings.updateScrollSensitivity
+                        ))
                     }
 
                     Divider()

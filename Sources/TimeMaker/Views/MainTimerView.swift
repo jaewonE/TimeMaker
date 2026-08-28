@@ -282,11 +282,11 @@ struct MainTimerView: View {
             scrollableNumber(
                 String(format: "%02d", timer.displayedMinutes),
                 accessibilityLabel: "timer.minutes",
-                thresholdMultiplier: TimerScrollDistance.minutesThresholdMultiplier(
-                    from: settings.scrollDistance
+                thresholdMultiplier: TimerScrollSensitivity.minutesThresholdMultiplier(
+                    for: settings.scrollSensitivity
                 )
             ) { direction in
-                timer.adjustMinutes(direction: direction, step: 1)
+                timer.adjustMinutes(direction: direction, step: settings.scrollStep)
             }
 
             Text(":")
@@ -297,11 +297,11 @@ struct MainTimerView: View {
             scrollableNumber(
                 String(format: "%02d", timer.displayedSeconds),
                 accessibilityLabel: "timer.seconds",
-                thresholdMultiplier: TimerScrollDistance.secondsThresholdMultiplier(
-                    from: settings.scrollDistance
+                thresholdMultiplier: TimerScrollSensitivity.secondsThresholdMultiplier(
+                    for: settings.scrollSensitivity
                 )
             ) { direction in
-                timer.adjustSeconds(direction: direction, step: 1)
+                timer.adjustSeconds(direction: direction, step: settings.scrollStep)
             }
         }
         .lineLimit(1)
@@ -319,7 +319,7 @@ struct MainTimerView: View {
     private func scrollableNumber(
         _ value: String,
         accessibilityLabel: LocalizedStringKey,
-        thresholdMultiplier: Int,
+        thresholdMultiplier: Double,
         onScroll: @escaping (ScrollDirection) -> Void
     ) -> some View {
         Text(value)

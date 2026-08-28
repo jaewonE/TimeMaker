@@ -31,26 +31,31 @@ final class TimeMakerCoreTests: XCTestCase {
         )
     }
 
-    func testScrollDistanceUsesDifferentMinuteAndSecondThresholds() {
-        XCTAssertEqual(TimerScrollDistance.minutesThresholdMultiplier(from: 1), 4)
-        XCTAssertEqual(TimerScrollDistance.secondsThresholdMultiplier(from: 1), 2)
-        XCTAssertEqual(TimerScrollDistance.minutesThresholdMultiplier(from: 3), 12)
-        XCTAssertEqual(TimerScrollDistance.secondsThresholdMultiplier(from: 3), 6)
+    func testDiscreteScrollSensitivityPreservesTheTimerIncrementSetting() {
+        XCTAssertEqual(
+            ScrollSensitivity.allCases.map(\.rawValue),
+            [0.5, 1, 2, 3, 4, 5]
+        )
+        XCTAssertEqual(ScrollSensitivity.closest(to: 1.4), .one)
+        XCTAssertEqual(TimerScrollSensitivity.minutesThresholdMultiplier(for: .one), 4)
+        XCTAssertEqual(TimerScrollSensitivity.secondsThresholdMultiplier(for: .one), 2)
+        XCTAssertEqual(TimerScrollSensitivity.minutesThresholdMultiplier(for: .three), 12)
+        XCTAssertEqual(TimerScrollSensitivity.secondsThresholdMultiplier(for: .three), 6)
         XCTAssertEqual(
             TimerAdjustment.minutes(
                 in: 30 * 60,
                 direction: .increase,
-                step: 1
+                step: 5
             ),
-            31 * 60
+            35 * 60
         )
         XCTAssertEqual(
             TimerAdjustment.seconds(
                 in: 30 * 60,
                 direction: .increase,
-                step: 1
+                step: 5
             ),
-            (30 * 60) + 1
+            (30 * 60) + 5
         )
     }
 

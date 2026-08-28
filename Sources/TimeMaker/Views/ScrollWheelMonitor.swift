@@ -4,7 +4,7 @@ import TimeMakerCore
 
 struct ScrollWheelMonitor: NSViewRepresentable {
     let enabled: Bool
-    let thresholdMultiplier: Int
+    let thresholdMultiplier: Double
     let onScroll: (ScrollDirection) -> Void
 
     func makeNSView(context: Context) -> ScrollCapturingView {
@@ -24,7 +24,7 @@ struct ScrollWheelMonitor: NSViewRepresentable {
     final class ScrollCapturingView: NSView {
         var onScroll: ((ScrollDirection) -> Void)?
         var enabled = true
-        var thresholdMultiplier = 1
+        var thresholdMultiplier = 1.0
         private var accumulatedDelta: CGFloat = 0
 
         override var acceptsFirstResponder: Bool { false }
@@ -37,7 +37,7 @@ struct ScrollWheelMonitor: NSViewRepresentable {
 
             accumulatedDelta += event.scrollingDeltaY
             let baselineThreshold: CGFloat = event.hasPreciseScrollingDeltas ? 8 : 1
-            let threshold = baselineThreshold * CGFloat(max(thresholdMultiplier, 1))
+            let threshold = baselineThreshold * CGFloat(max(thresholdMultiplier, 0.5))
 
             while abs(accumulatedDelta) >= threshold {
                 let direction: ScrollDirection = accumulatedDelta > 0 ? .increase : .decrease

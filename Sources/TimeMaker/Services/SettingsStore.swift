@@ -7,7 +7,8 @@ import UserNotifications
 
 @MainActor
 final class SettingsStore: ObservableObject {
-    @Published private(set) var scrollDistance: Int
+    @Published private(set) var scrollStep: Int
+    @Published private(set) var scrollSensitivity: ScrollSensitivity
     @Published private(set) var launchAtLogin: Bool
     @Published private(set) var hideWindowOnStart: Bool
     @Published private(set) var countCancelledTimerTime: Bool
@@ -19,7 +20,9 @@ final class SettingsStore: ObservableObject {
     @Published private(set) var notificationStatusText: String = ""
 
     private enum Key {
-        static let scrollDistance = "settings.scrollDistance"
+        static let scrollStep = "settings.scrollStep"
+        static let scrollSensitivity = "settings.scrollSensitivity"
+        static let legacyScrollDistance = "settings.scrollDistance"
         static let launchAtLogin = "settings.launchAtLogin"
         static let hideWindowOnStart = "settings.hideWindowOnStart"
         static let countCancelledTimerTime = "settings.countCancelledTimerTime"
@@ -39,8 +42,15 @@ final class SettingsStore: ObservableObject {
         self.defaults = defaults
         self.notificationService = notificationService
 
+        // Read persisted values before registering defaults so a v1.0.3 custom
+        // distance can be migrated without mistaking the registered 1× default
+        // for an explicitly selected value.
+        let storedSensitivity = defaults.object(forKey: Key.scrollSensitivity) as? NSNumber
+        let legacyScrollDistance = defaults.object(forKey: Key.legacyScrollDistance) as? NSNumber
+
         defaults.register(defaults: [
-            Key.scrollDistance: 1,
+            Key.scrollStep: 5,
+            Key.scrollSensitivity: ScrollSensitivity.one.rawValue,
             Key.launchAtLogin: true,
             Key.hideWindowOnStart: true,
             Key.countCancelledTimerTime: false,
@@ -50,7 +60,16 @@ final class SettingsStore: ObservableObject {
             Key.notificationSoundEnabled: false
         ])
 
-        scrollDistance = min(max(defaults.integer(forKey: Key.scrollDistance), 1), 60)
+        scrollStep = min(max(defaults.integer(forKey: Key.scrollStep), 1), 60)
+        if let storedSensitivity {
+            scrollSensitivity = ScrollSensitivity.closest(to: storedSensitivity.doubleValue)
+        } else if let legacyScrollDistance {
+            let migratedSensitivity = ScrollSensitivity.closest(to: legacyScrollDistance.doubleValue)
+            scrollSensitivity = migratedSensitivity
+            defaults.set(migratedSensitivity.rawValue, forKey: Key.scrollSensitivity)
+        } else {
+            scrollSensitivity = .one
+        }
         launchAtLogin = defaults.bool(forKey: Key.launchAtLogin)
         hideWindowOnStart = defaults.bool(forKey: Key.hideWindowOnStart)
         countCancelledTimerTime = defaults.bool(forKey: Key.countCancelledTimerTime)
@@ -72,9 +91,14 @@ final class SettingsStore: ObservableObject {
         synchronizeLoginItem()
     }
 
-    func updateScrollDistance(_ value: Int) {
-        scrollDistance = min(max(value, 1), 60)
-        defaults.set(scrollDistance, forKey: Key.scrollDistance)
+    func updateScrollStep(_ value: Int) {
+        scrollStep = min(max(value, 1), 60)
+        defaults.set(scrollStep, forKey: Key.scrollStep)
+    }
+
+    func updateScrollSensitivity(_ value: ScrollSensitivity) {
+        scrollSensitivity = value
+        defaults.set(value.rawValue, forKey: Key.scrollSensitivity)
     }
 
     func updateLaunchAtLogin(_ enabled: Bool) {

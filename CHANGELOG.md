@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.4 — 2026-08-28
+
+### English
+
+- Restored the separate timer-increment setting, so an accepted scroll changes the chosen number of minutes or seconds again.
+- Replaced the scroll-distance stepper with a discrete horizontal sensitivity slider: 0.5×, 1×, 2×, 3×, 4×, or 5× (default 1×); minutes apply an additional 2× sensitivity.
+- Changed the optional completion sound to the built-in `Glass.aiff` chime.
+
+### 한국어
+
+- 인식된 스크롤마다 타이머 숫자를 몇 칸 바꿀지 정하는 별도 스크롤 단위 설정을 복원했습니다.
+- 스크롤 거리를 0.5×, 1×, 2×, 3×, 4×, 5× 중 하나만 고르는 이산 가로 감도 슬라이더로 변경했습니다. 기본값은 1×이며 분에는 2배의 감도가 추가로 적용됩니다.
+- 선택 가능한 완료음을 내장 `Glass.aiff` 차임으로 변경했습니다.
+
 ## 1.0.3 — 2026-08-28
 
 ### English

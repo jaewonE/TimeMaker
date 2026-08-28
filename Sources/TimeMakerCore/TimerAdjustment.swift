@@ -5,20 +5,33 @@ public enum ScrollDirection: Int, Sendable {
     case increase = 1
 }
 
-public enum TimerScrollDistance {
-    public static let minutesMultiplier = 4
-    public static let secondsMultiplier = 2
+public enum ScrollSensitivity: Double, CaseIterable, Identifiable, Codable, Sendable {
+    case half = 0.5
+    case one = 1
+    case two = 2
+    case three = 3
+    case four = 4
+    case five = 5
 
-    public static func minutesThresholdMultiplier(from baseDistance: Int) -> Int {
-        normalizedBaseDistance(baseDistance) * minutesMultiplier
+    public var id: Double { rawValue }
+
+    public static func closest(to value: Double) -> ScrollSensitivity {
+        allCases.min { lhs, rhs in
+            abs(lhs.rawValue - value) < abs(rhs.rawValue - value)
+        } ?? .one
+    }
+}
+
+public enum TimerScrollSensitivity {
+    public static let secondsBaseDistanceMultiplier = 2.0
+    public static let minutesAdditionalSensitivityMultiplier = 2.0
+
+    public static func secondsThresholdMultiplier(for sensitivity: ScrollSensitivity) -> Double {
+        sensitivity.rawValue * secondsBaseDistanceMultiplier
     }
 
-    public static func secondsThresholdMultiplier(from baseDistance: Int) -> Int {
-        normalizedBaseDistance(baseDistance) * secondsMultiplier
-    }
-
-    private static func normalizedBaseDistance(_ value: Int) -> Int {
-        min(max(value, 1), 60)
+    public static func minutesThresholdMultiplier(for sensitivity: ScrollSensitivity) -> Double {
+        secondsThresholdMultiplier(for: sensitivity) * minutesAdditionalSensitivityMultiplier
     }
 }
 

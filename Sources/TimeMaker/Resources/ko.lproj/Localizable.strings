@@ -55,9 +55,12 @@
 "settings.labels.title" = "라벨 및 기록";
 "settings.system.title" = "시스템";
 "settings.appearance.title" = "화면";
-"settings.scrollDistance" = "스크롤 거리";
-"settings.scrollDistance.description" = "시간을 한 단위 바꾸는 데 필요한 기준 이동 거리입니다. 분은 4배, 초는 2배의 거리가 필요합니다.";
-"settings.scrollDistance.value" = "%d×";
+"settings.scrollStep" = "스크롤 단위";
+"settings.scrollStep.description" = "인식된 한 번의 스크롤마다 타이머 숫자를 몇 칸 이동할지 정합니다.";
+"settings.scrollStep.value" = "%d";
+"settings.scrollSensitivity" = "스크롤 감도";
+"settings.scrollSensitivity.description" = "분은 2배 만큼의 감도가 추가적으로 적용됩니다.";
+"settings.scrollSensitivity.shortLabel" = "감도";
 "settings.hideOnStart" = "타이머 시작 시 윈도우 숨기기";
 "settings.hideOnStart.description" = "시작 후 메뉴바의 실시간 카운트다운만 남깁니다.";
 "settings.countCancelledTime" = "초기화한 시간도 분석에 포함";
@@ -84,7 +87,7 @@
 "settings.notifications" = "알림 허용";
 "settings.notifications.description" = "타이머 완료 시 macOS 알림을 표시합니다. 알림을 클릭하면 타이머 창이 열립니다.";
 "settings.notificationsSound" = "알림 소리 허용";
-"settings.notificationsSound.description" = "타이머 완료 시 Mac의 시스템 알림음을 재생합니다.";
+"settings.notificationsSound.description" = "타이머 완료 시 내장 Glass 차임을 재생합니다.";
 "settings.notifications.authorized" = "macOS 알림이 허용되었습니다.";
 "settings.notifications.denied" = "시스템 설정에서 TimeMaker 알림이 비활성화되어 있습니다.";
 "settings.notifications.notDetermined" = "macOS 알림 권한이 아직 결정되지 않았습니다.";

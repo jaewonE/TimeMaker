@@ -13,7 +13,7 @@ TimeMaker is a menu-bar-only app (`LSUIElement`) composed of native macOS framew
 
 ## Timer state flow
 
-`TimerStore` is the single source of truth for idle, running, and paused state. A running timer stores a deadline instead of decrementing a counter as its authoritative time source. The 250 ms UI ticker derives the displayed whole seconds from that deadline. This prevents drift and lets the timer recover after display sleep, system sleep, or process restart. Minute adjustment is clamped at the supported bounds. `ScrollWheelMonitor` accumulates physical scroll distance before issuing a one-unit timer adjustment: minutes require 4× and seconds require 2× the configured base distance.
+`TimerStore` is the single source of truth for idle, running, and paused state. A running timer stores a deadline instead of decrementing a counter as its authoritative time source. The 250 ms UI ticker derives the displayed whole seconds from that deadline. This prevents drift and lets the timer recover after display sleep, system sleep, or process restart. Minute adjustment is clamped at the supported bounds. `ScrollWheelMonitor` accumulates physical movement using one of six discrete sensitivity choices (0.5×, 1×, 2×, 3×, 4×, or 5×), then applies the separately configured timer increment. Minutes apply an additional 2× sensitivity.
 
 The persisted state contains:
 
@@ -23,7 +23,7 @@ The persisted state contains:
 - activity label and original session start;
 - active time accumulated before pauses.
 
-On completion, the store records exactly one session, optionally sends a native notification, resets the countdown to the configured duration, and retains the last label. When sound is enabled it plays the Mac system alert sound directly; clicking the notification reopens the timer window. A user reset also returns to the configured duration; its elapsed active time is written as a session only when the related setting is enabled.
+On completion, the store records exactly one session, optionally sends a native notification, resets the countdown to the configured duration, and retains the last label. When sound is enabled it plays the built-in `Glass.aiff` chime directly; clicking the notification reopens the timer window. A user reset also returns to the configured duration; its elapsed active time is written as a session only when the related setting is enabled.
 
 ## Persistence
 
@@ -38,7 +38,7 @@ Label identity normalizes whitespace, hyphens, underscores, and English case. Au
 ## System integrations
 
 - `SMAppService.mainApp` registers or unregisters TimeMaker as a login item.
-- `UNUserNotificationCenter` presents the completion notification and routes its default click action to the timer panel; `NSSound.beep()` plays the optional Mac system alert sound without depending on notification-sound permission.
+- `UNUserNotificationCenter` presents the completion notification and routes its default click action to the timer panel; `NSSound` plays the optional built-in `Glass.aiff` chime without depending on notification-sound permission.
 - `NSAppearance` applies System, Light, or Dark selection across both windows.
 
 ## Packaging

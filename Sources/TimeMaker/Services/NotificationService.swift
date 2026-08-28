@@ -3,6 +3,11 @@ import Foundation
 import UserNotifications
 
 final class NotificationService: NSObject, UNUserNotificationCenterDelegate {
+    private static let completionSound = NSSound(
+        contentsOf: URL(fileURLWithPath: "/System/Library/Sounds/Glass.aiff"),
+        byReference: true
+    )
+
     var onNotificationClicked: (() -> Void)?
 
     override init() {
@@ -37,7 +42,9 @@ final class NotificationService: NSObject, UNUserNotificationCenterDelegate {
 
         if soundEnabled {
             DispatchQueue.main.async {
-                NSSound.beep()
+                if Self.completionSound?.play() != true {
+                    NSSound.beep()
+                }
             }
         }
 

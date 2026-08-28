@@ -55,9 +55,12 @@
 "settings.labels.title" = "Labels & history";
 "settings.system.title" = "System";
 "settings.appearance.title" = "Appearance";
-"settings.scrollDistance" = "Scroll distance";
-"settings.scrollDistance.description" = "Base movement for one unit of time; minutes require 4× and seconds require 2× this distance.";
-"settings.scrollDistance.value" = "%d×";
+"settings.scrollStep" = "Scroll increment";
+"settings.scrollStep.description" = "Choose how many minutes or seconds change after an accepted scroll.";
+"settings.scrollStep.value" = "%d";
+"settings.scrollSensitivity" = "Scroll sensitivity";
+"settings.scrollSensitivity.description" = "Minutes apply an additional 2× sensitivity.";
+"settings.scrollSensitivity.shortLabel" = "Sensitivity";
 "settings.hideOnStart" = "Hide window when timer starts";
 "settings.hideOnStart.description" = "Keep only the live countdown in the menu bar after starting.";
 "settings.countCancelledTime" = "Include cancelled time in analytics";
@@ -84,7 +87,7 @@
 "settings.notifications" = "Allow notifications";
 "settings.notifications.description" = "Show a native macOS notification when a timer finishes. Clicking it opens the timer window.";
 "settings.notificationsSound" = "Allow notification sound";
-"settings.notificationsSound.description" = "Play your Mac's system alert sound when a timer finishes.";
+"settings.notificationsSound.description" = "Play the built-in Glass chime when a timer finishes.";
 "settings.notifications.authorized" = "macOS notifications are authorized.";
 "settings.notifications.denied" = "Notifications are disabled for TimeMaker in System Settings.";
 "settings.notifications.notDetermined" = "macOS has not decided notification permission yet.";
