@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.0.3 — 2026-08-28
+
+### English
+
+- Corrected scroll behavior so each accepted movement changes the timer by one unit; minutes now require 4× and seconds 2× the base scroll distance.
+- Restored compact spacing between the timer and playback control, and resized the timer panel to match.
+- Made the optional completion sound play the Mac system alert sound directly.
+- Opened the timer panel when a completion notification is clicked.
+- Added confirmed preset-period clearing for completed timer records: 1 day, 3 days, 1 week, 1/3/6 months, 1 year, or all time.
+
+### 한국어
+
+- 시간 증감 폭 대신 스크롤 이동 거리에 감도를 적용하도록 수정했습니다. 한 번의 조절은 시간 1단위이며 분은 기준 거리의 4배, 초는 2배가 필요합니다.
+- 타이머와 재생 버튼 사이 간격을 라벨과 타이머 간격에 맞추고 타이머 창 크기를 조정했습니다.
+- 선택한 완료 알림 소리를 Mac 시스템 알림음으로 직접 재생하도록 수정했습니다.
+- 완료 알림을 클릭하면 타이머 창이 열리도록 추가했습니다.
+- 1일, 3일, 일주일, 1/3/6개월, 1년, 전체 프리셋 중 하나를 고르고 확인 후 완료 기록을 초기화하는 기능을 추가했습니다.
+
 ## 1.0.2 — 2026-08-28
 
 ### English

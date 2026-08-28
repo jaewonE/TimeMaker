@@ -49,7 +49,7 @@ struct MainTimerView: View {
                     .padding(.top, 2)
 
                 startPauseButton
-                    .padding(.top, 40)
+                    .padding(.top, 2)
 
                 Spacer(minLength: 0)
             }
@@ -63,13 +63,13 @@ struct MainTimerView: View {
             WindowFocusResetter(resetToken: presentation.focusResetToken &+ localFocusResetToken)
                 .frame(width: 0, height: 0)
         }
-        .frame(width: 380, height: 246)
+        .frame(width: 360, height: 208)
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .overlay(alignment: .topLeading) {
             TodayProgressDots(totalSeconds: timer.todayProgressSeconds())
-                .padding(.leading, 18)
-                .padding(.top, 148)
+                .padding(.leading, 14)
+                .padding(.top, 124)
                 .allowsHitTesting(false)
         }
         .onHover { isHovered = $0 }
@@ -281,12 +281,12 @@ struct MainTimerView: View {
         HStack(alignment: .firstTextBaseline, spacing: 2) {
             scrollableNumber(
                 String(format: "%02d", timer.displayedMinutes),
-                accessibilityLabel: "timer.minutes"
-            ) { direction in
-                timer.adjustMinutes(
-                    direction: direction,
-                    step: TimerScrollSensitivity.minutesStep(from: settings.scrollStep)
+                accessibilityLabel: "timer.minutes",
+                thresholdMultiplier: TimerScrollDistance.minutesThresholdMultiplier(
+                    from: settings.scrollDistance
                 )
+            ) { direction in
+                timer.adjustMinutes(direction: direction, step: 1)
             }
 
             Text(":")
@@ -296,17 +296,17 @@ struct MainTimerView: View {
 
             scrollableNumber(
                 String(format: "%02d", timer.displayedSeconds),
-                accessibilityLabel: "timer.seconds"
-            ) { direction in
-                timer.adjustSeconds(
-                    direction: direction,
-                    step: TimerScrollSensitivity.secondsStep(from: settings.scrollStep)
+                accessibilityLabel: "timer.seconds",
+                thresholdMultiplier: TimerScrollDistance.secondsThresholdMultiplier(
+                    from: settings.scrollDistance
                 )
+            ) { direction in
+                timer.adjustSeconds(direction: direction, step: 1)
             }
         }
         .lineLimit(1)
         .minimumScaleFactor(0.64)
-        .frame(maxWidth: 344, minHeight: 70)
+        .frame(maxWidth: 324, minHeight: 70)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("timer.remaining"))
         .accessibilityValue(Text(timer.displayText))
@@ -319,6 +319,7 @@ struct MainTimerView: View {
     private func scrollableNumber(
         _ value: String,
         accessibilityLabel: LocalizedStringKey,
+        thresholdMultiplier: Int,
         onScroll: @escaping (ScrollDirection) -> Void
     ) -> some View {
         Text(value)
@@ -326,7 +327,11 @@ struct MainTimerView: View {
             .foregroundStyle(.primary)
             .contentShape(Rectangle())
             .overlay {
-                ScrollWheelMonitor(enabled: timer.canChangeDuration, onScroll: onScroll)
+                ScrollWheelMonitor(
+                    enabled: timer.canChangeDuration,
+                    thresholdMultiplier: thresholdMultiplier,
+                    onScroll: onScroll
+                )
             }
             .help(timer.canChangeDuration ? Text("timer.scrollHint") : Text("timer.runningHint"))
             .accessibilityLabel(Text(accessibilityLabel))

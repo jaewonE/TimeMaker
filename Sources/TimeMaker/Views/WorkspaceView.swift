@@ -17,7 +17,7 @@ struct WorkspaceView: View {
                 case .analytics:
                     AnalyticsView(history: history)
                 case .settings:
-                    SettingsView(settings: settings)
+                    SettingsView(settings: settings, history: history)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

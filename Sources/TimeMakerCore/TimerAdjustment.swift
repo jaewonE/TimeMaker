@@ -5,19 +5,19 @@ public enum ScrollDirection: Int, Sendable {
     case increase = 1
 }
 
-public enum TimerScrollSensitivity {
+public enum TimerScrollDistance {
     public static let minutesMultiplier = 4
     public static let secondsMultiplier = 2
 
-    public static func minutesStep(from baseStep: Int) -> Int {
-        normalizedBaseStep(baseStep) * minutesMultiplier
+    public static func minutesThresholdMultiplier(from baseDistance: Int) -> Int {
+        normalizedBaseDistance(baseDistance) * minutesMultiplier
     }
 
-    public static func secondsStep(from baseStep: Int) -> Int {
-        normalizedBaseStep(baseStep) * secondsMultiplier
+    public static func secondsThresholdMultiplier(from baseDistance: Int) -> Int {
+        normalizedBaseDistance(baseDistance) * secondsMultiplier
     }
 
-    private static func normalizedBaseStep(_ value: Int) -> Int {
+    private static func normalizedBaseDistance(_ value: Int) -> Int {
         min(max(value, 1), 60)
     }
 }
@@ -41,7 +41,7 @@ public enum TimerAdjustment {
         direction: ScrollDirection,
         step: Int
     ) -> Int {
-        let safeStep = min(max(step, 1), DurationFormatting.maximumSeconds)
+        let safeStep = min(max(step, 1), 60)
         let components = DurationFormatting.components(totalSeconds)
 
         guard components.minutes < DurationFormatting.maximumMinutes else {

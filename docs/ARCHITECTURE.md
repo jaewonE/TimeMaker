@@ -13,7 +13,7 @@ TimeMaker is a menu-bar-only app (`LSUIElement`) composed of native macOS framew
 
 ## Timer state flow
 
-`TimerStore` is the single source of truth for idle, running, and paused state. A running timer stores a deadline instead of decrementing a counter as its authoritative time source. The 250 ms UI ticker derives the displayed whole seconds from that deadline. This prevents drift and lets the timer recover after display sleep, system sleep, or process restart. Minute adjustment is clamped at the supported bounds, while the UI applies distinct 4× minute and 2× second scroll sensitivities from the configured base step.
+`TimerStore` is the single source of truth for idle, running, and paused state. A running timer stores a deadline instead of decrementing a counter as its authoritative time source. The 250 ms UI ticker derives the displayed whole seconds from that deadline. This prevents drift and lets the timer recover after display sleep, system sleep, or process restart. Minute adjustment is clamped at the supported bounds. `ScrollWheelMonitor` accumulates physical scroll distance before issuing a one-unit timer adjustment: minutes require 4× and seconds require 2× the configured base distance.
 
 The persisted state contains:
 
@@ -23,11 +23,11 @@ The persisted state contains:
 - activity label and original session start;
 - active time accumulated before pauses.
 
-On completion, the store records exactly one session, optionally sends a silent native notification, resets the countdown to the configured duration, and retains the last label. A user reset also returns to the configured duration; its elapsed active time is written as a session only when the related setting is enabled.
+On completion, the store records exactly one session, optionally sends a native notification, resets the countdown to the configured duration, and retains the last label. When sound is enabled it plays the Mac system alert sound directly; clicking the notification reopens the timer window. A user reset also returns to the configured duration; its elapsed active time is written as a session only when the related setting is enabled.
 
 ## Persistence
 
-`HistoryStore` writes an atomically replaced, versioned JSON document under Application Support. The document contains completed sessions and normalized label-use counters. Preferences and active-timer recovery state use `UserDefaults`.
+`HistoryStore` writes an atomically replaced, versioned JSON document under Application Support. The document contains completed sessions and normalized label-use counters. Its period-based clear operation removes only completed sessions whose end time falls within the selected preset range; saved label suggestions remain. Preferences and active-timer recovery state use `UserDefaults`.
 
 Label identity normalizes whitespace, hyphens, underscores, and English case. Autocomplete uses that canonical form for substring matching, then orders results by usage count, recency, and label.
 
@@ -38,7 +38,7 @@ Label identity normalizes whitespace, hyphens, underscores, and English case. Au
 ## System integrations
 
 - `SMAppService.mainApp` registers or unregisters TimeMaker as a login item.
-- `UNUserNotificationCenter` requests sound authorization only when the optional sound setting is enabled and uses the Mac default sound for completed timers.
+- `UNUserNotificationCenter` presents the completion notification and routes its default click action to the timer panel; `NSSound.beep()` plays the optional Mac system alert sound without depending on notification-sound permission.
 - `NSAppearance` applies System, Light, or Dark selection across both windows.
 
 ## Packaging

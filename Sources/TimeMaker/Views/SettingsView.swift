@@ -4,6 +4,11 @@ import TimeMakerCore
 
 struct SettingsView: View {
     @ObservedObject var settings: SettingsStore
+    @ObservedObject var history: HistoryStore
+
+    @State private var pendingHistoryClearPeriod: HistoryClearPeriod?
+    @State private var isShowingHistoryClearConfirmation = false
+    @State private var historyClearResult: String?
 
     var body: some View {
         ScrollView {
@@ -12,20 +17,20 @@ struct SettingsView: View {
 
                 SettingsGroup(title: "settings.timer.title") {
                     SettingRow(
-                        title: "settings.scrollStep",
-                        description: "settings.scrollStep.description"
+                        title: "settings.scrollDistance",
+                        description: "settings.scrollDistance.description"
                     ) {
                         HStack(spacing: 8) {
                             Text(String(
-                                format: NSLocalizedString("settings.minutes.value", comment: ""),
-                                settings.scrollStep
+                                format: NSLocalizedString("settings.scrollDistance.value", comment: ""),
+                                settings.scrollDistance
                             ))
                             .monospacedDigit()
-                            .frame(width: 34, alignment: .trailing)
+                            .frame(width: 38, alignment: .trailing)
 
                             Stepper("", value: Binding(
-                                get: { settings.scrollStep },
-                                set: settings.updateScrollStep
+                                get: { settings.scrollDistance },
+                                set: settings.updateScrollDistance
                             ), in: 1...60)
                             .labelsHidden()
                         }
@@ -66,6 +71,32 @@ struct SettingsView: View {
                         description: "settings.defaultLabel.description"
                     ) {
                         DefaultLabelField(settings: settings)
+                    }
+
+                    Divider()
+
+                    SettingRow(
+                        title: "settings.clearHistory",
+                        description: "settings.clearHistory.description"
+                    ) {
+                        Menu {
+                            ForEach(HistoryClearPeriod.allCases) { period in
+                                Button(historyClearPeriodTitle(period)) {
+                                    pendingHistoryClearPeriod = period
+                                    isShowingHistoryClearConfirmation = true
+                                }
+                            }
+                        } label: {
+                            Label("settings.clearHistory.choose", systemImage: "trash")
+                        }
+                        .menuStyle(.borderlessButton)
+                    }
+
+                    if let historyClearResult {
+                        Text(historyClearResult)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
 
@@ -154,6 +185,22 @@ struct SettingsView: View {
             .padding(28)
         }
         .navigationTitle(Text("nav.settings"))
+        .confirmationDialog(
+            historyClearConfirmationTitle,
+            isPresented: $isShowingHistoryClearConfirmation,
+            titleVisibility: .visible
+        ) {
+            if pendingHistoryClearPeriod != nil {
+                Button(historyClearActionTitle, role: .destructive) {
+                    clearHistory()
+                }
+            }
+            Button("action.cancel", role: .cancel) {
+                pendingHistoryClearPeriod = nil
+            }
+        } message: {
+            Text(historyClearConfirmationMessage)
+        }
     }
 
     private var header: some View {
@@ -167,6 +214,40 @@ struct SettingsView: View {
     }
 
     private var settingsError: String? { nil }
+
+    private var historyClearConfirmationTitle: String {
+        NSLocalizedString("settings.clearHistory.confirmation.title", comment: "")
+    }
+
+    private var historyClearConfirmationMessage: String {
+        guard let period = pendingHistoryClearPeriod else { return "" }
+        return String(
+            format: NSLocalizedString("settings.clearHistory.confirmation.message", comment: ""),
+            historyClearPeriodTitle(period)
+        )
+    }
+
+    private var historyClearActionTitle: String {
+        guard let period = pendingHistoryClearPeriod else { return "" }
+        return String(
+            format: NSLocalizedString("settings.clearHistory.action", comment: ""),
+            historyClearPeriodTitle(period)
+        )
+    }
+
+    private func historyClearPeriodTitle(_ period: HistoryClearPeriod) -> String {
+        NSLocalizedString("settings.clearHistory.period.\(period.rawValue)", comment: "")
+    }
+
+    private func clearHistory() {
+        guard let period = pendingHistoryClearPeriod else { return }
+        let removedCount = history.clearTimerRecords(in: period)
+        historyClearResult = String(
+            format: NSLocalizedString("settings.clearHistory.result", comment: ""),
+            removedCount
+        )
+        pendingHistoryClearPeriod = nil
+    }
 }
 
 private struct DefaultLabelField: View {

@@ -31,24 +31,26 @@ final class TimeMakerCoreTests: XCTestCase {
         )
     }
 
-    func testScrollSensitivityUsesDifferentMinuteAndSecondMultipliers() {
-        XCTAssertEqual(TimerScrollSensitivity.minutesStep(from: 5), 20)
-        XCTAssertEqual(TimerScrollSensitivity.secondsStep(from: 5), 10)
+    func testScrollDistanceUsesDifferentMinuteAndSecondThresholds() {
+        XCTAssertEqual(TimerScrollDistance.minutesThresholdMultiplier(from: 1), 4)
+        XCTAssertEqual(TimerScrollDistance.secondsThresholdMultiplier(from: 1), 2)
+        XCTAssertEqual(TimerScrollDistance.minutesThresholdMultiplier(from: 3), 12)
+        XCTAssertEqual(TimerScrollDistance.secondsThresholdMultiplier(from: 3), 6)
         XCTAssertEqual(
             TimerAdjustment.minutes(
                 in: 30 * 60,
                 direction: .increase,
-                step: TimerScrollSensitivity.minutesStep(from: 5)
+                step: 1
             ),
-            50 * 60
+            31 * 60
         )
         XCTAssertEqual(
             TimerAdjustment.seconds(
                 in: 30 * 60,
                 direction: .increase,
-                step: TimerScrollSensitivity.secondsStep(from: 5)
+                step: 1
             ),
-            (30 * 60) + 10
+            (30 * 60) + 1
         )
     }
 
@@ -57,6 +59,48 @@ final class TimeMakerCoreTests: XCTestCase {
         XCTAssertEqual(ProgressDotLayout.columnCount(for: 24), 3)
         XCTAssertEqual(ProgressDotLayout.rowCount(for: 9), 8)
         XCTAssertEqual(ProgressDotLayout.columnCount(for: 9), 2)
+    }
+
+    func testHistoryClearPeriodsUseOnlyTheRequestedRecentRange() throws {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let now = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-08-28T12:00:00Z"))
+
+        XCTAssertTrue(
+            HistoryClearPeriod.oneDay.includes(
+                now.addingTimeInterval(-86_400),
+                relativeTo: now,
+                calendar: calendar
+            )
+        )
+        XCTAssertFalse(
+            HistoryClearPeriod.oneDay.includes(
+                now.addingTimeInterval(-86_401),
+                relativeTo: now,
+                calendar: calendar
+            )
+        )
+        XCTAssertTrue(
+            HistoryClearPeriod.threeMonths.includes(
+                try XCTUnwrap(calendar.date(byAdding: .month, value: -2, to: now)),
+                relativeTo: now,
+                calendar: calendar
+            )
+        )
+        XCTAssertFalse(
+            HistoryClearPeriod.threeMonths.includes(
+                try XCTUnwrap(calendar.date(byAdding: .month, value: -4, to: now)),
+                relativeTo: now,
+                calendar: calendar
+            )
+        )
+        XCTAssertTrue(
+            HistoryClearPeriod.all.includes(
+                now.addingTimeInterval(86_400),
+                relativeTo: now,
+                calendar: calendar
+            )
+        )
     }
 
     func testSecondScrollingWrapsWithoutChangingMinutes() {

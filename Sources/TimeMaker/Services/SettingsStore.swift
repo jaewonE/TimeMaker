@@ -7,7 +7,7 @@ import UserNotifications
 
 @MainActor
 final class SettingsStore: ObservableObject {
-    @Published private(set) var scrollStep: Int
+    @Published private(set) var scrollDistance: Int
     @Published private(set) var launchAtLogin: Bool
     @Published private(set) var hideWindowOnStart: Bool
     @Published private(set) var countCancelledTimerTime: Bool
@@ -19,7 +19,7 @@ final class SettingsStore: ObservableObject {
     @Published private(set) var notificationStatusText: String = ""
 
     private enum Key {
-        static let scrollStep = "settings.scrollStep"
+        static let scrollDistance = "settings.scrollDistance"
         static let launchAtLogin = "settings.launchAtLogin"
         static let hideWindowOnStart = "settings.hideWindowOnStart"
         static let countCancelledTimerTime = "settings.countCancelledTimerTime"
@@ -40,7 +40,7 @@ final class SettingsStore: ObservableObject {
         self.notificationService = notificationService
 
         defaults.register(defaults: [
-            Key.scrollStep: 5,
+            Key.scrollDistance: 1,
             Key.launchAtLogin: true,
             Key.hideWindowOnStart: true,
             Key.countCancelledTimerTime: false,
@@ -50,7 +50,7 @@ final class SettingsStore: ObservableObject {
             Key.notificationSoundEnabled: false
         ])
 
-        scrollStep = min(max(defaults.integer(forKey: Key.scrollStep), 1), 60)
+        scrollDistance = min(max(defaults.integer(forKey: Key.scrollDistance), 1), 60)
         launchAtLogin = defaults.bool(forKey: Key.launchAtLogin)
         hideWindowOnStart = defaults.bool(forKey: Key.hideWindowOnStart)
         countCancelledTimerTime = defaults.bool(forKey: Key.countCancelledTimerTime)
@@ -66,18 +66,15 @@ final class SettingsStore: ObservableObject {
 
     func prepareSystemIntegrations() {
         applyAppearance()
-        notificationService.requestAuthorizationIfNeeded(
-            enabled: notificationsEnabled,
-            soundEnabled: notificationSoundEnabled
-        ) { [weak self] in
+        notificationService.requestAuthorizationIfNeeded(enabled: notificationsEnabled) { [weak self] in
             self?.refreshNotificationStatus()
         }
         synchronizeLoginItem()
     }
 
-    func updateScrollStep(_ value: Int) {
-        scrollStep = min(max(value, 1), 60)
-        defaults.set(scrollStep, forKey: Key.scrollStep)
+    func updateScrollDistance(_ value: Int) {
+        scrollDistance = min(max(value, 1), 60)
+        defaults.set(scrollDistance, forKey: Key.scrollDistance)
     }
 
     func updateLaunchAtLogin(_ enabled: Bool) {
@@ -110,10 +107,7 @@ final class SettingsStore: ObservableObject {
     func updateNotificationsEnabled(_ enabled: Bool) {
         notificationsEnabled = enabled
         defaults.set(enabled, forKey: Key.notificationsEnabled)
-        notificationService.requestAuthorizationIfNeeded(
-            enabled: enabled,
-            soundEnabled: notificationSoundEnabled
-        ) { [weak self] in
+        notificationService.requestAuthorizationIfNeeded(enabled: enabled) { [weak self] in
             self?.refreshNotificationStatus()
         }
     }
@@ -121,12 +115,6 @@ final class SettingsStore: ObservableObject {
     func updateNotificationSoundEnabled(_ enabled: Bool) {
         notificationSoundEnabled = enabled
         defaults.set(enabled, forKey: Key.notificationSoundEnabled)
-        notificationService.requestAuthorizationIfNeeded(
-            enabled: notificationsEnabled,
-            soundEnabled: enabled
-        ) { [weak self] in
-            self?.refreshNotificationStatus()
-        }
     }
 
     private func applyAppearance() {

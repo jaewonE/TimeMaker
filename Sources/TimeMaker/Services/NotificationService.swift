@@ -1,7 +1,10 @@
+import AppKit
 import Foundation
 import UserNotifications
 
 final class NotificationService: NSObject, UNUserNotificationCenterDelegate {
+    var onNotificationClicked: (() -> Void)?
+
     override init() {
         super.init()
         UNUserNotificationCenter.current().delegate = self
@@ -9,18 +12,13 @@ final class NotificationService: NSObject, UNUserNotificationCenterDelegate {
 
     func requestAuthorizationIfNeeded(
         enabled: Bool,
-        soundEnabled: Bool = false,
         completion: (() -> Void)? = nil
     ) {
         guard enabled else {
             completion?()
             return
         }
-        var options: UNAuthorizationOptions = [.alert]
-        if soundEnabled {
-            options.insert(.sound)
-        }
-        UNUserNotificationCenter.current().requestAuthorization(options: options) { _, error in
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert]) { _, error in
             if let error {
                 NSLog("TimeMaker notification authorization failed: %@", error.localizedDescription)
             }
@@ -37,13 +35,19 @@ final class NotificationService: NSObject, UNUserNotificationCenterDelegate {
     func deliverCompletion(label: String, enabled: Bool, soundEnabled: Bool) {
         guard enabled else { return }
 
+        if soundEnabled {
+            DispatchQueue.main.async {
+                NSSound.beep()
+            }
+        }
+
         let content = UNMutableNotificationContent()
         content.title = NSLocalizedString("notification.completed.title", comment: "")
         content.body = String(
             format: NSLocalizedString("notification.completed.body", comment: ""),
             label
         )
-        content.sound = soundEnabled ? .default : nil
+        content.sound = nil
 
         let request = UNNotificationRequest(
             identifier: "timer-complete-\(UUID().uuidString)",
@@ -62,10 +66,19 @@ final class NotificationService: NSObject, UNUserNotificationCenterDelegate {
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
-        var options: UNNotificationPresentationOptions = [.banner, .list]
-        if notification.request.content.sound != nil {
-            options.insert(.sound)
+        completionHandler([.banner, .list])
+    }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
+            DispatchQueue.main.async { [weak self] in
+                self?.onNotificationClicked?()
+            }
         }
-        completionHandler(options)
+        completionHandler()
     }
 }

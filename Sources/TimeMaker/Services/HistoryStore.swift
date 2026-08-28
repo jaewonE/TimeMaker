@@ -74,6 +74,24 @@ final class HistoryStore: ObservableObject {
             .reduce(0) { $0 + $1.durationSeconds }
     }
 
+    @discardableResult
+    func clearTimerRecords(
+        in period: HistoryClearPeriod,
+        now: Date = Date(),
+        calendar: Calendar = .current
+    ) -> Int {
+        let originalCount = sessions.count
+        sessions.removeAll { session in
+            period.includes(session.endedAt, relativeTo: now, calendar: calendar)
+        }
+
+        let removedCount = originalCount - sessions.count
+        if removedCount > 0 {
+            save()
+        }
+        return removedCount
+    }
+
     private func load() throws {
         guard FileManager.default.fileExists(atPath: storageURL.path) else { return }
         let data = try Data(contentsOf: storageURL)

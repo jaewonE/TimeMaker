@@ -17,7 +17,7 @@ final class MainPanelController: NSWindowController {
         self.timer = timer
 
         let panel = MainPanel(
-            contentRect: NSRect(x: 0, y: 0, width: 380, height: 246),
+            contentRect: NSRect(x: 0, y: 0, width: 360, height: 208),
             styleMask: [.borderless],
             backing: .buffered,
             defer: false

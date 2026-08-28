@@ -46,6 +46,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let isUITestLaunch = CommandLine.arguments.contains("--ui-test")
         NSApp.setActivationPolicy(isUITestLaunch ? .regular : .accessory)
         _ = menuBar
+        notificationService.onNotificationClicked = { [weak self] in
+            DispatchQueue.main.async { [weak self] in
+                self?.menuBar.showMainPanel()
+            }
+        }
         settings.prepareSystemIntegrations()
 
         if isUITestLaunch,
