@@ -3,6 +3,7 @@
 "action.close" = "Close";
 "action.pause" = "Pause timer";
 "action.quit" = "Quit TimeMaker";
+"action.reset" = "Reset timer";
 "action.start" = "Start timer";
 
 "nav.analytics" = "Analytics";
@@ -12,7 +13,7 @@
 "menu.timer" = "Timer";
 "menu.minutes" = "%d min";
 
-"label.placeholder" = "Work";
+"label.placeholder" = "work";
 "label.accessibility" = "Current activity label";
 
 "timer.minutes" = "Minutes";
@@ -50,6 +51,7 @@
 "settings.title" = "Settings";
 "settings.subtitle" = "Make TimeMaker fit the way you focus.";
 "settings.timer.title" = "Timer";
+"settings.labels.title" = "Labels & history";
 "settings.system.title" = "System";
 "settings.appearance.title" = "Appearance";
 "settings.scrollStep" = "Scroll step";
@@ -57,6 +59,10 @@
 "settings.minutes.value" = "%d";
 "settings.hideOnStart" = "Hide window when timer starts";
 "settings.hideOnStart.description" = "Keep only the live countdown in the menu bar after starting.";
+"settings.countCancelledTime" = "Include cancelled time in analytics";
+"settings.countCancelledTime.description" = "Record elapsed active time when you reset a timer.";
+"settings.defaultLabel" = "Default label";
+"settings.defaultLabel.description" = "Used when the timer window closes with an empty label.";
 "settings.launchAtLogin" = "Open at login";
 "settings.launchAtLogin.description" = "Start TimeMaker automatically when you sign in to this Mac.";
 "settings.notifications" = "Allow notifications";

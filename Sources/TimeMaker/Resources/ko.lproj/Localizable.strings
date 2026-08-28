@@ -3,6 +3,7 @@
 "action.close" = "닫기";
 "action.pause" = "타이머 일시정지";
 "action.quit" = "TimeMaker 종료";
+"action.reset" = "타이머 초기화";
 "action.start" = "타이머 시작";
 
 "nav.analytics" = "분석";
@@ -12,7 +13,7 @@
 "menu.timer" = "타이머";
 "menu.minutes" = "%d분";
 
-"label.placeholder" = "Work";
+"label.placeholder" = "work";
 "label.accessibility" = "현재 활동 라벨";
 
 "timer.minutes" = "분";
@@ -50,6 +51,7 @@
 "settings.title" = "설정";
 "settings.subtitle" = "집중 방식에 맞게 TimeMaker를 조정합니다.";
 "settings.timer.title" = "타이머";
+"settings.labels.title" = "라벨 및 기록";
 "settings.system.title" = "시스템";
 "settings.appearance.title" = "화면";
 "settings.scrollStep" = "스크롤 단위";
@@ -57,6 +59,10 @@
 "settings.minutes.value" = "%d";
 "settings.hideOnStart" = "타이머 시작 시 윈도우 숨기기";
 "settings.hideOnStart.description" = "시작 후 메뉴바의 실시간 카운트다운만 남깁니다.";
+"settings.countCancelledTime" = "초기화한 시간도 분석에 포함";
+"settings.countCancelledTime.description" = "타이머를 초기화할 때까지의 실제 진행 시간을 기록합니다.";
+"settings.defaultLabel" = "기본 라벨";
+"settings.defaultLabel.description" = "빈 라벨 상태로 타이머 창을 닫으면 이 값을 사용합니다.";
 "settings.launchAtLogin" = "Mac 로그인 시 열기";
 "settings.launchAtLogin.description" = "이 Mac에 로그인하면 TimeMaker를 자동으로 시작합니다.";
 "settings.notifications" = "알림 허용";

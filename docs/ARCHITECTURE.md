@@ -6,8 +6,8 @@
 
 TimeMaker is a menu-bar-only app (`LSUIElement`) composed of native macOS frameworks:
 
-- `MenuBarController` owns the `NSStatusItem`, live title, left-click panel toggle, and right-click hierarchical menu.
-- `MainPanelController` owns a borderless `NSPanel` anchored below the status item.
+- `MenuBarController` owns the `NSStatusItem`, live title, left-click timer-window toggle, and right-click start/pause/resume action.
+- `MainPanelController` owns an independent, movable borderless `NSPanel` with the timer UI's single custom close control.
 - `WorkspaceWindowController` owns the shared Analytics/Settings `NSWindow` and sidebar navigation.
 - SwiftUI renders all three surfaces while AppKit manages menu-bar and window behavior.
 
@@ -23,13 +23,13 @@ The persisted state contains:
 - activity label and original session start;
 - active time accumulated before pauses.
 
-On completion, the store records exactly one session, optionally sends a silent native notification, resets the countdown to the configured duration, and retains the last label.
+On completion, the store records exactly one session, optionally sends a silent native notification, resets the countdown to the configured duration, and retains the last label. A user reset also returns to the configured duration; its elapsed active time is written as a session only when the related setting is enabled.
 
 ## Persistence
 
 `HistoryStore` writes an atomically replaced, versioned JSON document under Application Support. The document contains completed sessions and normalized label-use counters. Preferences and active-timer recovery state use `UserDefaults`.
 
-Autocomplete uses case- and diacritic-insensitive substring matching. Results are ordered by usage count, then recency, then label.
+Label identity normalizes whitespace, hyphens, underscores, and English case. Autocomplete uses that canonical form for substring matching, then orders results by usage count, recency, and label.
 
 ## Analytics
 

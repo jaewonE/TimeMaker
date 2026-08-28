@@ -79,12 +79,16 @@ final class HistoryStore: ObservableObject {
         let data = try Data(contentsOf: storageURL)
         let file = try decoder.decode(StorageFile.self, from: data)
         sessions = file.sessions.sorted { $0.endedAt > $1.endedAt }
-        labelUsages = file.labelUsages
+        labelUsages = consolidatedLabelUsages(file.labelUsages)
 
         if labelUsages.isEmpty, !sessions.isEmpty {
             rebuildLabelUsagesFromSessions()
         }
         sortLabelUsages()
+
+        if labelUsages != file.labelUsages {
+            save()
+        }
     }
 
     private func rebuildLabelUsagesFromSessions() {
@@ -121,12 +125,43 @@ final class HistoryStore: ObservableObject {
         }
     }
 
+    private func consolidatedLabelUsages(_ usages: [LabelUsage]) -> [LabelUsage] {
+        var consolidated: [String: LabelUsage] = [:]
+
+        for usage in usages {
+            let label = normalizedDisplayLabel(usage.label)
+            let normalized = normalizedLookupLabel(label)
+
+            guard var existing = consolidated[normalized] else {
+                consolidated[normalized] = LabelUsage(
+                    label: label,
+                    count: usage.count,
+                    lastUsedAt: usage.lastUsedAt
+                )
+                continue
+            }
+
+            let totalCount = existing.count + usage.count
+            if usage.lastUsedAt > existing.lastUsedAt {
+                existing = LabelUsage(
+                    label: label,
+                    count: totalCount,
+                    lastUsedAt: usage.lastUsedAt
+                )
+            } else {
+                existing.count = totalCount
+            }
+            consolidated[normalized] = existing
+        }
+
+        return Array(consolidated.values)
+    }
+
     private func normalizedDisplayLabel(_ value: String) -> String {
-        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? "Work" : trimmed
+        LabelNormalization.displayLabel(value)
     }
 
     private func normalizedLookupLabel(_ value: String) -> String {
-        value.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
+        LabelNormalization.lookupKey(value)
     }
 }

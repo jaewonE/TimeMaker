@@ -7,7 +7,7 @@ final class TimerStore: ObservableObject {
     @Published private(set) var phase: TimerPhase = .idle
     @Published private(set) var configuredSeconds: Int = 30 * 60
     @Published private(set) var remainingSeconds: Int = 30 * 60
-    @Published var currentLabel: String = "Work" {
+    @Published var currentLabel: String = LabelNormalization.fallbackLabel {
         didSet {
             guard !isRestoringState else { return }
             defaults.set(currentLabel, forKey: Self.lastLabelKey)
@@ -107,6 +107,39 @@ final class TimerStore: ObservableObject {
             direction: direction,
             step: step
         ))
+    }
+
+    func cancel(now: Date = Date()) {
+        guard phase != .idle else {
+            remainingSeconds = configuredSeconds
+            persistState()
+            return
+        }
+
+        if phase == .running {
+            updateRunningState(now: now)
+        }
+        guard phase != .idle else { return }
+
+        let elapsedSeconds = min(max(currentSessionElapsedSeconds, 0), plannedDurationSeconds)
+        if settings.countCancelledTimerTime, elapsedSeconds > 0 {
+            let label = normalizedLabel(currentLabel)
+            let startedAt = sessionStartedAt ?? now.addingTimeInterval(-TimeInterval(elapsedSeconds))
+            history.addSession(TimerSession(
+                label: label,
+                startedAt: startedAt,
+                endedAt: now,
+                durationSeconds: elapsedSeconds
+            ))
+        }
+
+        resetActiveTimerState()
+        persistState()
+    }
+
+    func restoreDefaultLabelIfEmpty() {
+        guard currentLabel.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        currentLabel = settings.defaultLabel
     }
 
     func suggestions(for query: String) -> [LabelUsage] {
@@ -212,13 +245,7 @@ final class TimerStore: ObservableObject {
             enabled: settings.notificationsEnabled
         )
 
-        phase = .idle
-        remainingSeconds = configuredSeconds
-        deadline = nil
-        sessionStartedAt = nil
-        lastResumedAt = nil
-        accumulatedActiveSeconds = 0
-        currentSessionElapsedSeconds = 0
+        resetActiveTimerState()
         persistState()
     }
 
@@ -226,7 +253,8 @@ final class TimerStore: ObservableObject {
         isRestoringState = true
         defer { isRestoringState = false }
 
-        if let lastLabel = defaults.string(forKey: Self.lastLabelKey), !lastLabel.isEmpty {
+        if let lastLabel = defaults.string(forKey: Self.lastLabelKey),
+           !lastLabel.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             currentLabel = lastLabel
         }
 
@@ -277,8 +305,17 @@ final class TimerStore: ObservableObject {
         }
     }
 
+    private func resetActiveTimerState() {
+        phase = .idle
+        remainingSeconds = configuredSeconds
+        deadline = nil
+        sessionStartedAt = nil
+        lastResumedAt = nil
+        accumulatedActiveSeconds = 0
+        currentSessionElapsedSeconds = 0
+    }
+
     private func normalizedLabel(_ value: String) -> String {
-        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? "Work" : trimmed
+        LabelNormalization.displayLabel(value, fallback: settings.defaultLabel)
     }
 }

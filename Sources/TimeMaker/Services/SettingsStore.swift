@@ -10,6 +10,8 @@ final class SettingsStore: ObservableObject {
     @Published private(set) var scrollStep: Int
     @Published private(set) var launchAtLogin: Bool
     @Published private(set) var hideWindowOnStart: Bool
+    @Published private(set) var countCancelledTimerTime: Bool
+    @Published private(set) var defaultLabel: String
     @Published private(set) var appearance: AppearancePreference
     @Published private(set) var notificationsEnabled: Bool
     @Published private(set) var loginItemStatusText: String = ""
@@ -19,6 +21,8 @@ final class SettingsStore: ObservableObject {
         static let scrollStep = "settings.scrollStep"
         static let launchAtLogin = "settings.launchAtLogin"
         static let hideWindowOnStart = "settings.hideWindowOnStart"
+        static let countCancelledTimerTime = "settings.countCancelledTimerTime"
+        static let defaultLabel = "settings.defaultLabel"
         static let appearance = "settings.appearance"
         static let notificationsEnabled = "settings.notificationsEnabled"
     }
@@ -37,6 +41,8 @@ final class SettingsStore: ObservableObject {
             Key.scrollStep: 5,
             Key.launchAtLogin: true,
             Key.hideWindowOnStart: true,
+            Key.countCancelledTimerTime: false,
+            Key.defaultLabel: LabelNormalization.fallbackLabel,
             Key.appearance: AppearancePreference.system.rawValue,
             Key.notificationsEnabled: true
         ])
@@ -44,6 +50,10 @@ final class SettingsStore: ObservableObject {
         scrollStep = min(max(defaults.integer(forKey: Key.scrollStep), 1), 60)
         launchAtLogin = defaults.bool(forKey: Key.launchAtLogin)
         hideWindowOnStart = defaults.bool(forKey: Key.hideWindowOnStart)
+        countCancelledTimerTime = defaults.bool(forKey: Key.countCancelledTimerTime)
+        defaultLabel = LabelNormalization.displayLabel(
+            defaults.string(forKey: Key.defaultLabel) ?? LabelNormalization.fallbackLabel
+        )
         appearance = AppearancePreference(
             rawValue: defaults.string(forKey: Key.appearance) ?? "system"
         ) ?? .system
@@ -72,6 +82,16 @@ final class SettingsStore: ObservableObject {
     func updateHideWindowOnStart(_ enabled: Bool) {
         hideWindowOnStart = enabled
         defaults.set(enabled, forKey: Key.hideWindowOnStart)
+    }
+
+    func updateCountCancelledTimerTime(_ enabled: Bool) {
+        countCancelledTimerTime = enabled
+        defaults.set(enabled, forKey: Key.countCancelledTimerTime)
+    }
+
+    func updateDefaultLabel(_ value: String) {
+        defaultLabel = LabelNormalization.displayLabel(value)
+        defaults.set(defaultLabel, forKey: Key.defaultLabel)
     }
 
     func updateAppearance(_ value: AppearancePreference) {

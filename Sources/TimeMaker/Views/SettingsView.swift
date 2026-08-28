@@ -45,6 +45,29 @@ struct SettingsView: View {
                         .labelsHidden()
                         .toggleStyle(.switch)
                     }
+
+                    Divider()
+
+                    SettingRow(
+                        title: "settings.countCancelledTime",
+                        description: "settings.countCancelledTime.description"
+                    ) {
+                        Toggle("", isOn: Binding(
+                            get: { settings.countCancelledTimerTime },
+                            set: settings.updateCountCancelledTimerTime
+                        ))
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                    }
+                }
+
+                SettingsGroup(title: "settings.labels.title") {
+                    SettingRow(
+                        title: "settings.defaultLabel",
+                        description: "settings.defaultLabel.description"
+                    ) {
+                        DefaultLabelField(settings: settings)
+                    }
                 }
 
                 SettingsGroup(title: "settings.system.title") {
@@ -130,6 +153,42 @@ struct SettingsView: View {
     }
 
     private var settingsError: String? { nil }
+}
+
+private struct DefaultLabelField: View {
+    @ObservedObject var settings: SettingsStore
+    @State private var draft = ""
+    @FocusState private var isFocused: Bool
+
+    var body: some View {
+        TextField("label.placeholder", text: $draft)
+            .textFieldStyle(.roundedBorder)
+            .frame(width: 190)
+            .focused($isFocused)
+            .onSubmit {
+                commit()
+                isFocused = false
+            }
+            .onChange(of: isFocused) { _, focused in
+                if !focused {
+                    commit()
+                }
+            }
+            .onChange(of: settings.defaultLabel) { _, value in
+                if !isFocused {
+                    draft = value
+                }
+            }
+            .onAppear {
+                draft = settings.defaultLabel
+            }
+            .accessibilityLabel(Text("settings.defaultLabel"))
+    }
+
+    private func commit() {
+        settings.updateDefaultLabel(draft)
+        draft = settings.defaultLabel
+    }
 }
 
 private struct SettingsGroup<Content: View>: View {

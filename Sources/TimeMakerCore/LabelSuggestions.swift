@@ -6,15 +6,12 @@ public enum LabelSuggestions {
         usages: [LabelUsage],
         limit: Int = 6
     ) -> [LabelUsage] {
-        let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        let foldedQuery = trimmedQuery.folding(
-            options: [.caseInsensitive, .diacriticInsensitive],
-            locale: .current
-        )
+        let normalizedQuery = LabelNormalization.lookupKey(query)
 
         return usages
             .filter { usage in
-                foldedQuery.isEmpty || usage.normalizedLabel.contains(foldedQuery)
+                let normalizedUsage = LabelNormalization.lookupKey(usage.label)
+                return normalizedQuery.isEmpty || normalizedUsage.contains(normalizedQuery)
             }
             .sorted { lhs, rhs in
                 if lhs.count != rhs.count {

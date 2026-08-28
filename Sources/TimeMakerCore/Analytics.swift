@@ -87,11 +87,15 @@ public enum AnalyticsBuilder {
         let activeDayCount = max(daily.filter { $0.totalSeconds > 0 }.count, 1)
 
         let activityGroups = Dictionary(grouping: relevantSessions) { session in
-            session.label.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "Work" : session.label
+            LabelNormalization.lookupKey(session.label)
         }
-        let activities = activityGroups.map { label, group in
-            ActivityFocus(
-                label: label,
+        let activities = activityGroups.values.map { group in
+            let displayLabel = group
+                .max(by: { $0.endedAt < $1.endedAt })
+                .map { LabelNormalization.displayLabel($0.label) }
+                ?? LabelNormalization.fallbackLabel
+            return ActivityFocus(
+                label: displayLabel,
                 totalSeconds: group.reduce(0) { $0 + $1.durationSeconds },
                 sessionCount: group.count
             )

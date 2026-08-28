@@ -51,6 +51,19 @@ final class TimeMakerCoreTests: XCTestCase {
         XCTAssertEqual(results.map(\.label), ["Writing", "Weekly Review", "Deep Work"])
     }
 
+    func testLabelNormalizationTreatsSeparatorsAndEnglishCaseAsEquivalent() {
+        XCTAssertEqual(LabelNormalization.lookupKey("Deep Work"), "deep work")
+        XCTAssertEqual(LabelNormalization.lookupKey("deep-work"), "deep work")
+        XCTAssertEqual(LabelNormalization.lookupKey("DEEP__WORK"), "deep work")
+
+        let usages = [
+            LabelUsage(label: "Deep Work", count: 3),
+            LabelUsage(label: "Reading", count: 1)
+        ]
+
+        XCTAssertEqual(LabelSuggestions.matching("DEEP_work", usages: usages).map(\.label), ["Deep Work"])
+    }
+
     func testAnalyticsBuildsDailyTotalsActivitiesAndStreak() throws {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
@@ -91,5 +104,31 @@ final class TimeMakerCoreTests: XCTestCase {
         XCTAssertEqual(snapshot.currentStreak, 3)
         XCTAssertEqual(snapshot.activities.first?.label, "Work")
         XCTAssertEqual(snapshot.activities.first?.totalSeconds, 3_600)
+    }
+
+    func testAnalyticsGroupsEquivalentLabelsTogether() throws {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let now = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-08-27T12:00:00Z"))
+        let sessions = [
+            TimerSession(
+                label: "Deep Work",
+                startedAt: now.addingTimeInterval(-1_800),
+                endedAt: now,
+                durationSeconds: 1_800
+            ),
+            TimerSession(
+                label: "deep_work",
+                startedAt: now.addingTimeInterval(-900),
+                endedAt: now,
+                durationSeconds: 900
+            )
+        ]
+
+        let snapshot = AnalyticsBuilder.snapshot(sessions: sessions, now: now, calendar: calendar)
+
+        XCTAssertEqual(snapshot.activities.count, 1)
+        XCTAssertEqual(snapshot.activities.first?.totalSeconds, 2_700)
+        XCTAssertEqual(snapshot.activities.first?.sessionCount, 2)
     }
 }

@@ -7,8 +7,8 @@ TimeMaker is a native macOS Pomodoro timer that lives in the menu bar. It is bui
 ## Highlights
 
 - Live `MM:SS` countdown in the menu bar, including durations above one hour such as `90:00`.
-- Compact floating timer panel modeled after the supplied visual references.
-- Activity labels with frequency-ranked autocomplete from previously used labels.
+- Compact independent timer window with the original single custom close control.
+- Activity labels with frequency-ranked autocomplete from previously used labels, flexible separator/case matching, and keyboard selection.
 - Scroll-adjustable minutes and seconds with a configurable step from 1 to 60.
 - Presets for 5, 10, 15, 30, 60, and 90 minutes.
 - Pause/resume support and deadline-based timing that remains accurate across sleep and app restarts.
@@ -21,7 +21,7 @@ TimeMaker is a native macOS Pomodoro timer that lives in the menu bar. It is bui
 ## Requirements
 
 - macOS 14 Sonoma or later
-- The packaged `v1.0.0` artifact is built for Apple Silicon (`arm64`)
+- The packaged `v1.0.1` artifact is built for Apple Silicon (`arm64`)
 - Xcode 15.3 or later and Swift 5.10 or later when building from source
 
 ## Install
@@ -30,7 +30,7 @@ The locally built app is installed at `/Applications/TimeMaker.app`.
 
 For a release download:
 
-1. Download `TimeMaker-1.0.0-macOS-arm64.zip` from the private GitHub release.
+1. Download `TimeMaker-1.0.1-macOS-arm64.zip` from the private GitHub release.
 2. Extract it and move `TimeMaker.app` to `/Applications`.
 3. On the first launch, Control-click the app and choose **Open** if Gatekeeper asks for confirmation.
 4. Allow notifications when macOS asks. TimeMaker sends banners without sound.
@@ -40,13 +40,14 @@ The release is ad-hoc signed because no Apple Developer signing identity is avai
 ## Use
 
 - Left-click the menu-bar countdown to show or hide the timer panel.
-- Right-click the countdown for Timer, Analytics, and Settings menus.
+- Right-click the countdown to start, pause, or resume the timer.
 - Scroll over the minute or second value while the timer is idle to change it.
-- Type an activity such as `Work`, `Reading`, or `Writing`; matching previous labels appear below the field, most frequently used first.
+- Use the reset button beside Analytics to cancel an active timer and return it to its configured duration.
+- Type an activity such as `work`, `Reading`, or `Writing`; matching labels appear below the field. Use Up/Down and Return to select a match, or click one with the mouse.
 - Press Play to start. When **Hide window when timer starts** is enabled, the panel closes and the menu-bar countdown remains visible.
 - Reopen the panel to pause or resume.
 
-TimeMaker keeps the last activity label after a timer completes. A new installation starts with `Work` and `30:00`.
+TimeMaker keeps the last activity label after a timer completes. If an empty label is left when the timer window closes, it restores the configured default label. A new installation starts with `work` and `30:00`.
 
 ## Settings
 
@@ -55,6 +56,8 @@ TimeMaker keeps the last activity label after a timer completes. A new installat
 | Scroll step | 5 | 1–60 |
 | Open at login | On | On / Off |
 | Hide window when timer starts | On | On / Off |
+| Include cancelled time in analytics | Off | On / Off |
+| Default label | `work` | Any non-empty label |
 | Color mode | System | System / Light / Dark |
 | Allow notifications | On | On / Off; silent native notification |
 

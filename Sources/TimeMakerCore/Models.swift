@@ -44,12 +44,9 @@ public struct LabelUsage: Codable, Hashable, Identifiable, Sendable {
     public var lastUsedAt: Date
 
     public init(label: String, count: Int = 1, lastUsedAt: Date = Date()) {
-        let trimmed = label.trimmingCharacters(in: .whitespacesAndNewlines)
-        self.label = trimmed
-        self.normalizedLabel = trimmed.folding(
-            options: [.caseInsensitive, .diacriticInsensitive],
-            locale: .current
-        )
+        let displayLabel = LabelNormalization.displayLabel(label)
+        self.label = displayLabel
+        self.normalizedLabel = LabelNormalization.lookupKey(displayLabel)
         self.count = max(count, 1)
         self.lastUsedAt = lastUsedAt
     }
