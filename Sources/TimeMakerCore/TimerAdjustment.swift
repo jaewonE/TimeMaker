@@ -35,7 +35,50 @@ public enum TimerScrollSensitivity {
     }
 }
 
+public enum TimerScrollAdjustmentPolicy {
+    public static let defaultAllowsActiveAdjustment = false
+
+    public static func isEnabled(
+        during phase: TimerPhase,
+        allowsActiveAdjustment: Bool
+    ) -> Bool {
+        phase == .idle || allowsActiveAdjustment
+    }
+}
+
 public enum TimerAdjustment {
+    public struct ActiveSessionResult: Equatable, Sendable {
+        public let remainingSeconds: Int
+        public let plannedDurationSeconds: Int
+    }
+
+    public static func activeSession(
+        requestedRemainingSeconds: Int,
+        previousRemainingSeconds: Int,
+        plannedDurationSeconds: Int,
+        elapsedSeconds: Int
+    ) -> ActiveSessionResult {
+        let safeElapsedSeconds = min(
+            max(elapsedSeconds, 0),
+            DurationFormatting.maximumSeconds
+        )
+        let maximumRemainingSeconds = DurationFormatting.maximumSeconds - safeElapsedSeconds
+        let remainingSeconds = min(
+            max(requestedRemainingSeconds, 0),
+            maximumRemainingSeconds
+        )
+        let adjustment = remainingSeconds - max(previousRemainingSeconds, 0)
+        let adjustedPlannedDuration = min(
+            max(plannedDurationSeconds + adjustment, safeElapsedSeconds),
+            DurationFormatting.maximumSeconds
+        )
+
+        return ActiveSessionResult(
+            remainingSeconds: remainingSeconds,
+            plannedDurationSeconds: adjustedPlannedDuration
+        )
+    }
+
     public static func minutes(
         in totalSeconds: Int,
         direction: ScrollDirection,

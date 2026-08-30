@@ -9,6 +9,7 @@ import UserNotifications
 final class SettingsStore: ObservableObject {
     @Published private(set) var scrollStep: Int
     @Published private(set) var scrollSensitivity: ScrollSensitivity
+    @Published private(set) var allowActiveTimerScrollAdjustment: Bool
     @Published private(set) var launchAtLogin: Bool
     @Published private(set) var hideWindowOnStart: Bool
     @Published private(set) var countCancelledTimerTime: Bool
@@ -22,6 +23,7 @@ final class SettingsStore: ObservableObject {
     private enum Key {
         static let scrollStep = "settings.scrollStep"
         static let scrollSensitivity = "settings.scrollSensitivity"
+        static let allowActiveTimerScrollAdjustment = "settings.allowActiveTimerScrollAdjustment"
         static let legacyScrollDistance = "settings.scrollDistance"
         static let launchAtLogin = "settings.launchAtLogin"
         static let hideWindowOnStart = "settings.hideWindowOnStart"
@@ -51,6 +53,8 @@ final class SettingsStore: ObservableObject {
         defaults.register(defaults: [
             Key.scrollStep: 5,
             Key.scrollSensitivity: ScrollSensitivity.one.rawValue,
+            Key.allowActiveTimerScrollAdjustment:
+                TimerScrollAdjustmentPolicy.defaultAllowsActiveAdjustment,
             Key.launchAtLogin: true,
             Key.hideWindowOnStart: true,
             Key.countCancelledTimerTime: false,
@@ -70,6 +74,9 @@ final class SettingsStore: ObservableObject {
         } else {
             scrollSensitivity = .one
         }
+        allowActiveTimerScrollAdjustment = defaults.bool(
+            forKey: Key.allowActiveTimerScrollAdjustment
+        )
         launchAtLogin = defaults.bool(forKey: Key.launchAtLogin)
         hideWindowOnStart = defaults.bool(forKey: Key.hideWindowOnStart)
         countCancelledTimerTime = defaults.bool(forKey: Key.countCancelledTimerTime)
@@ -99,6 +106,11 @@ final class SettingsStore: ObservableObject {
     func updateScrollSensitivity(_ value: ScrollSensitivity) {
         scrollSensitivity = value
         defaults.set(value.rawValue, forKey: Key.scrollSensitivity)
+    }
+
+    func updateAllowActiveTimerScrollAdjustment(_ enabled: Bool) {
+        allowActiveTimerScrollAdjustment = enabled
+        defaults.set(enabled, forKey: Key.allowActiveTimerScrollAdjustment)
     }
 
     func updateLaunchAtLogin(_ enabled: Bool) {

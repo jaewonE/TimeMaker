@@ -64,6 +64,12 @@ final class TimerStore: ObservableObject {
     }
 
     var canChangeDuration: Bool { phase == .idle }
+    var canAdjustDurationByScrolling: Bool {
+        TimerScrollAdjustmentPolicy.isEnabled(
+            during: phase,
+            allowsActiveAdjustment: settings.allowActiveTimerScrollAdjustment
+        )
+    }
     var canStart: Bool { phase != .idle || configuredSeconds > 0 }
 
     @discardableResult
@@ -91,22 +97,78 @@ final class TimerStore: ObservableObject {
         persistState()
     }
 
-    func adjustMinutes(direction: ScrollDirection, step: Int) {
-        guard canChangeDuration else { return }
-        setDuration(seconds: TimerAdjustment.minutes(
-            in: configuredSeconds,
-            direction: direction,
-            step: step
-        ))
+    func adjustMinutes(direction: ScrollDirection, step: Int, now: Date = Date()) {
+        guard let adjustmentBase = scrollAdjustmentBase(now: now) else { return }
+        applyScrollAdjustment(
+            TimerAdjustment.minutes(
+                in: adjustmentBase,
+                direction: direction,
+                step: step
+            ),
+            previousSeconds: adjustmentBase,
+            now: now
+        )
     }
 
-    func adjustSeconds(direction: ScrollDirection, step: Int) {
-        guard canChangeDuration else { return }
-        setDuration(seconds: TimerAdjustment.seconds(
-            in: configuredSeconds,
-            direction: direction,
-            step: step
-        ))
+    func adjustSeconds(direction: ScrollDirection, step: Int, now: Date = Date()) {
+        guard let adjustmentBase = scrollAdjustmentBase(now: now) else { return }
+        applyScrollAdjustment(
+            TimerAdjustment.seconds(
+                in: adjustmentBase,
+                direction: direction,
+                step: step
+            ),
+            previousSeconds: adjustmentBase,
+            now: now
+        )
+    }
+
+    private func scrollAdjustmentBase(now: Date) -> Int? {
+        guard canAdjustDurationByScrolling else { return nil }
+
+        if phase == .idle {
+            return configuredSeconds
+        }
+
+        if phase == .running {
+            updateRunningState(now: now)
+        }
+
+        guard phase != .idle else { return nil }
+        return remainingSeconds
+    }
+
+    private func applyScrollAdjustment(
+        _ requestedSeconds: Int,
+        previousSeconds: Int,
+        now: Date
+    ) {
+        guard phase != .idle else {
+            setDuration(seconds: requestedSeconds)
+            return
+        }
+
+        let adjustmentResult = TimerAdjustment.activeSession(
+            requestedRemainingSeconds: requestedSeconds,
+            previousRemainingSeconds: previousSeconds,
+            plannedDurationSeconds: plannedDurationSeconds,
+            elapsedSeconds: currentSessionElapsedSeconds
+        )
+        let adjustment = adjustmentResult.remainingSeconds - previousSeconds
+        guard adjustment != 0 else { return }
+
+        remainingSeconds = adjustmentResult.remainingSeconds
+        plannedDurationSeconds = adjustmentResult.plannedDurationSeconds
+
+        if adjustmentResult.remainingSeconds == 0 {
+            complete(at: now)
+            return
+        }
+
+        if phase == .running {
+            deadline = now.addingTimeInterval(TimeInterval(adjustmentResult.remainingSeconds))
+        }
+        persistState()
     }
 
     func cancel(now: Date = Date()) {

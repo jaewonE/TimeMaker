@@ -51,6 +51,20 @@ struct SettingsView: View {
                     Divider()
 
                     SettingRow(
+                        title: "settings.allowActiveTimerScrollAdjustment",
+                        description: "settings.allowActiveTimerScrollAdjustment.description"
+                    ) {
+                        Toggle("", isOn: Binding(
+                            get: { settings.allowActiveTimerScrollAdjustment },
+                            set: settings.updateAllowActiveTimerScrollAdjustment
+                        ))
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                    }
+
+                    Divider()
+
+                    SettingRow(
                         title: "settings.hideOnStart",
                         description: "settings.hideOnStart.description"
                     ) {

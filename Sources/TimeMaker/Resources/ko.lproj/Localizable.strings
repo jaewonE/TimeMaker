@@ -21,7 +21,7 @@
 "timer.seconds" = "초";
 "timer.remaining" = "남은 시간";
 "timer.scrollHint" = "위아래로 스크롤하여 조절";
-"timer.runningHint" = "시간을 변경하려면 타이머를 완료하십시오";
+"timer.runningHint" = "이 타이머의 시간을 바꾸려면 설정에서 활성 타이머 스크롤 조정을 켜십시오";
 
 "progress.today" = "오늘의 집중 진행도";
 "progress.value" = "%d시간 %d분";
@@ -61,6 +61,8 @@
 "settings.scrollSensitivity" = "스크롤 감도";
 "settings.scrollSensitivity.description" = "분은 2배 만큼의 감도가 추가적으로 적용됩니다.";
 "settings.scrollSensitivity.shortLabel" = "감도";
+"settings.allowActiveTimerScrollAdjustment" = "활성 타이머 스크롤 조정";
+"settings.allowActiveTimerScrollAdjustment.description" = "실행 중이거나 일시정지된 타이머의 시간을 스크롤로 바꿉니다. 변경은 현재 세션에만 적용됩니다.";
 "settings.hideOnStart" = "타이머 시작 시 윈도우 숨기기";
 "settings.hideOnStart.description" = "시작 후 메뉴바의 실시간 카운트다운만 남깁니다.";
 "settings.countCancelledTime" = "초기화한 시간도 분석에 포함";

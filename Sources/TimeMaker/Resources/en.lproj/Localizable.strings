@@ -21,7 +21,7 @@
 "timer.seconds" = "Seconds";
 "timer.remaining" = "Time remaining";
 "timer.scrollHint" = "Scroll up or down to adjust";
-"timer.runningHint" = "Pause or finish the timer before changing its duration";
+"timer.runningHint" = "Enable active-timer scroll adjustment in Settings to change this timer";
 
 "progress.today" = "Today's focus progress";
 "progress.value" = "%d hours %d minutes";
@@ -61,6 +61,8 @@
 "settings.scrollSensitivity" = "Scroll sensitivity";
 "settings.scrollSensitivity.description" = "Minutes apply an additional 2× sensitivity.";
 "settings.scrollSensitivity.shortLabel" = "Sensitivity";
+"settings.allowActiveTimerScrollAdjustment" = "Adjust active timers by scrolling";
+"settings.allowActiveTimerScrollAdjustment.description" = "Allow scroll changes while a timer is running or paused. Changes apply only to the current session.";
 "settings.hideOnStart" = "Hide window when timer starts";
 "settings.hideOnStart.description" = "Keep only the live countdown in the menu bar after starting.";
 "settings.countCancelledTime" = "Include cancelled time in analytics";

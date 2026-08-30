@@ -118,16 +118,6 @@ struct MainTimerView: View {
             .help(Text("action.reset"))
             .accessibilityLabel(Text("action.reset"))
 
-            Button(action: onShowAnalytics) {
-                Image(systemName: "chart.bar.xaxis")
-                    .font(.system(size: 17, weight: .regular))
-                    .frame(width: 25, height: 23)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(HoverIconButtonStyle())
-            .help(Text("nav.analytics"))
-            .accessibilityLabel(Text("nav.analytics"))
-
             timerMenu
         }
         .frame(height: 30)
@@ -328,12 +318,12 @@ struct MainTimerView: View {
             .contentShape(Rectangle())
             .overlay {
                 ScrollWheelMonitor(
-                    enabled: timer.canChangeDuration,
+                    enabled: timer.canAdjustDurationByScrolling,
                     thresholdMultiplier: thresholdMultiplier,
                     onScroll: onScroll
                 )
             }
-            .help(timer.canChangeDuration ? Text("timer.scrollHint") : Text("timer.runningHint"))
+            .help(timer.canAdjustDurationByScrolling ? Text("timer.scrollHint") : Text("timer.runningHint"))
             .accessibilityLabel(Text(accessibilityLabel))
             .accessibilityValue(Text(value))
     }

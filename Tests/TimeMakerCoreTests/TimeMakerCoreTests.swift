@@ -59,6 +59,94 @@ final class TimeMakerCoreTests: XCTestCase {
         )
     }
 
+    func testActiveTimerScrollAdjustmentRequiresExplicitOptIn() {
+        XCTAssertFalse(TimerScrollAdjustmentPolicy.defaultAllowsActiveAdjustment)
+        XCTAssertTrue(
+            TimerScrollAdjustmentPolicy.isEnabled(
+                during: .idle,
+                allowsActiveAdjustment: false
+            )
+        )
+        XCTAssertFalse(
+            TimerScrollAdjustmentPolicy.isEnabled(
+                during: .running,
+                allowsActiveAdjustment: false
+            )
+        )
+        XCTAssertFalse(
+            TimerScrollAdjustmentPolicy.isEnabled(
+                during: .paused,
+                allowsActiveAdjustment: false
+            )
+        )
+        XCTAssertTrue(
+            TimerScrollAdjustmentPolicy.isEnabled(
+                during: .running,
+                allowsActiveAdjustment: true
+            )
+        )
+        XCTAssertTrue(
+            TimerScrollAdjustmentPolicy.isEnabled(
+                during: .paused,
+                allowsActiveAdjustment: true
+            )
+        )
+    }
+
+    func testActiveTimerScrollAdjustmentUpdatesOnlyTheCurrentSessionPlan() {
+        XCTAssertEqual(
+            TimerAdjustment.activeSession(
+                requestedRemainingSeconds: 1_800,
+                previousRemainingSeconds: 1_500,
+                plannedDurationSeconds: 1_800,
+                elapsedSeconds: 300
+            ),
+            TimerAdjustment.ActiveSessionResult(
+                remainingSeconds: 1_800,
+                plannedDurationSeconds: 2_100
+            )
+        )
+        XCTAssertEqual(
+            TimerAdjustment.activeSession(
+                requestedRemainingSeconds: 1_200,
+                previousRemainingSeconds: 1_500,
+                plannedDurationSeconds: 1_800,
+                elapsedSeconds: 300
+            ),
+            TimerAdjustment.ActiveSessionResult(
+                remainingSeconds: 1_200,
+                plannedDurationSeconds: 1_500
+            )
+        )
+        XCTAssertEqual(
+            TimerAdjustment.activeSession(
+                requestedRemainingSeconds: 0,
+                previousRemainingSeconds: 1_500,
+                plannedDurationSeconds: 1_800,
+                elapsedSeconds: 300
+            ),
+            TimerAdjustment.ActiveSessionResult(
+                remainingSeconds: 0,
+                plannedDurationSeconds: 300
+            )
+        )
+    }
+
+    func testActiveTimerScrollAdjustmentKeepsTheSessionWithinTheMaximumDuration() {
+        XCTAssertEqual(
+            TimerAdjustment.activeSession(
+                requestedRemainingSeconds: 120,
+                previousRemainingSeconds: 30,
+                plannedDurationSeconds: DurationFormatting.maximumSeconds - 30,
+                elapsedSeconds: DurationFormatting.maximumSeconds - 60
+            ),
+            TimerAdjustment.ActiveSessionResult(
+                remainingSeconds: 60,
+                plannedDurationSeconds: DurationFormatting.maximumSeconds
+            )
+        )
+    }
+
     func testProgressDotsUseAtMostEightVerticalRows() {
         XCTAssertEqual(ProgressDotLayout.rowCount(for: 24), 8)
         XCTAssertEqual(ProgressDotLayout.columnCount(for: 24), 3)

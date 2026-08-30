@@ -13,7 +13,7 @@ TimeMaker is a menu-bar-only app (`LSUIElement`) composed of native macOS framew
 
 ## Timer state flow
 
-`TimerStore` is the single source of truth for idle, running, and paused state. A running timer stores a deadline instead of decrementing a counter as its authoritative time source. The 250 ms UI ticker derives the displayed whole seconds from that deadline. This prevents drift and lets the timer recover after display sleep, system sleep, or process restart. Minute adjustment is clamped at the supported bounds. `ScrollWheelMonitor` accumulates physical movement using one of six discrete sensitivity choices (0.5×, 1×, 2×, 3×, 4×, or 5×), then applies the separately configured timer increment. Minutes apply an additional 2× sensitivity.
+`TimerStore` is the single source of truth for idle, running, and paused state. A running timer stores a deadline instead of decrementing a counter as its authoritative time source. The 250 ms UI ticker derives the displayed whole seconds from that deadline. This prevents drift and lets the timer recover after display sleep, system sleep, or process restart. Minute adjustment is clamped at the supported bounds. `ScrollWheelMonitor` accumulates physical movement using one of six discrete sensitivity choices (0.5×, 1×, 2×, 3×, 4×, or 5×), then applies the separately configured timer increment. Minutes apply an additional 2× sensitivity. Idle adjustment remains always available; the default-off active-timer setting additionally allows scroll changes while running or paused. An active change updates the running deadline or paused remainder and adjusts only the current session's planned duration.
 
 The persisted state contains:
 

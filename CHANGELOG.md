@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+### English
+
+- Removed the standalone Analytics toolbar icon while retaining Analytics in the More menu.
+- Changed the accent palette from soft green to a similarly light lavender purple.
+- Added a default-off setting that allows scroll adjustment for the current running or paused timer.
+
+### 한국어
+
+- 단독 분석 도구 막대 아이콘을 제거하고 더보기 메뉴의 분석 항목은 유지했습니다.
+- 포인트 색상을 연한 초록색에서 비슷한 밝기의 연보라색으로 변경했습니다.
+- 실행·일시정지 중인 현재 타이머를 스크롤로 조정하는 기본값 꺼짐 설정을 추가했습니다.
+
 ## 1.0.4 — 2026-08-28
 
 ### English
