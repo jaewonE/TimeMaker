@@ -25,7 +25,7 @@ TimeMaker is a native macOS Pomodoro timer that lives in the menu bar. It is bui
 ## Requirements
 
 - macOS 14 Sonoma or later
-- The packaged `v1.0.4` artifact is built for Apple Silicon (`arm64`)
+- The packaged `v1.1` artifact is built for Apple Silicon (`arm64`)
 - Xcode 15.3 or later and Swift 5.10 or later when building from source
 
 ## Install
@@ -34,7 +34,7 @@ The locally built app is installed at `/Applications/TimeMaker.app`.
 
 For a release download:
 
-1. Download `TimeMaker-1.0.4-macOS-arm64.zip` from the GitHub release.
+1. Download `TimeMaker-1.1-macOS-arm64.zip` from the GitHub release.
 2. Extract it and move `TimeMaker.app` to `/Applications`.
 3. On the first launch, Control-click the app and choose **Open** if Gatekeeper asks for confirmation.
 4. Allow notifications when macOS asks. Sound remains optional and uses the built-in Glass chime.

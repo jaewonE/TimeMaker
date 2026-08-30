@@ -25,7 +25,7 @@ TimeMaker는 macOS 메뉴바에서 동작하는 네이티브 Pomodoro Timer입�
 ## 요구 환경
 
 - macOS 14 Sonoma 이상
-- `v1.0.4` 배포 파일은 Apple Silicon(`arm64`)용
+- `v1.1` 배포 파일은 Apple Silicon(`arm64`)용
 - 소스 빌드 시 Xcode 15.3 이상, Swift 5.10 이상
 
 ## 설치
@@ -34,7 +34,7 @@ TimeMaker는 macOS 메뉴바에서 동작하는 네이티브 Pomodoro Timer입�
 
 GitHub 릴리스에서 설치하려면:
 
-1. GitHub 릴리스의 `TimeMaker-1.0.4-macOS-arm64.zip`을 내려받습니다.
+1. GitHub 릴리스의 `TimeMaker-1.1-macOS-arm64.zip`을 내려받습니다.
 2. 압축을 풀고 `TimeMaker.app`을 `/Applications`로 옮깁니다.
 3. 최초 실행 시 Gatekeeper 확인이 나타나면 앱을 Control-클릭한 뒤 **열기**를 선택합니다.
 4. macOS가 요청하면 알림을 허용합니다. 소리는 선택 사항이며 내장 Glass 차임을 사용합니다.
