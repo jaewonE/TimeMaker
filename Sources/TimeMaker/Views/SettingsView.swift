@@ -17,6 +17,43 @@ struct SettingsView: View {
 
                 SettingsGroup(title: "settings.timer.title") {
                     SettingRow(
+                        title: "settings.clickExtensionEnabled",
+                        description: "settings.clickExtensionEnabled.description"
+                    ) {
+                        Toggle("", isOn: Binding(
+                            get: { settings.clickExtensionEnabled },
+                            set: settings.updateClickExtensionEnabled
+                        ))
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                    }
+
+                    Divider()
+
+                    SettingRow(
+                        title: "settings.clickExtensionMinutes",
+                        description: "settings.clickExtensionMinutes.description"
+                    ) {
+                        HStack(spacing: 8) {
+                            Text(String(
+                                format: NSLocalizedString("settings.clickExtensionMinutes.value", comment: ""),
+                                settings.clickExtensionMinutes
+                            ))
+                            .monospacedDigit()
+                            .frame(width: 52, alignment: .trailing)
+
+                            Stepper("", value: Binding(
+                                get: { settings.clickExtensionMinutes },
+                                set: settings.updateClickExtensionMinutes
+                            ), in: TimerClickExtensionPolicy.minuteRange)
+                            .labelsHidden()
+                        }
+                        .disabled(!settings.clickExtensionEnabled)
+                    }
+
+                    Divider()
+
+                    SettingRow(
                         title: "settings.scrollStep",
                         description: "settings.scrollStep.description"
                     ) {

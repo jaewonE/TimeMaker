@@ -46,6 +46,18 @@ public enum TimerScrollAdjustmentPolicy {
     }
 }
 
+public enum TimerClickExtensionPolicy {
+    public static let defaultEnabled = true
+    public static let defaultMinutes = 1
+    public static let minimumMinutes = 1
+    public static let maximumMinutes = 60
+    public static let minuteRange = minimumMinutes...maximumMinutes
+
+    public static func clampedMinutes(_ value: Int) -> Int {
+        min(max(value, minimumMinutes), maximumMinutes)
+    }
+}
+
 public enum TimerAdjustment {
     public struct ActiveSessionResult: Equatable, Sendable {
         public let remainingSeconds: Int
@@ -76,6 +88,30 @@ public enum TimerAdjustment {
         return ActiveSessionResult(
             remainingSeconds: remainingSeconds,
             plannedDurationSeconds: adjustedPlannedDuration
+        )
+    }
+
+    public static func unrecordedActiveSessionExtension(
+        remainingSeconds: Int,
+        plannedDurationSeconds: Int,
+        incrementMinutes: Int
+    ) -> ActiveSessionResult {
+        let safeRemainingSeconds = min(
+            max(remainingSeconds, 0),
+            DurationFormatting.maximumSeconds
+        )
+        let safeIncrementMinutes = TimerClickExtensionPolicy.clampedMinutes(incrementMinutes)
+        let additionalSeconds = safeIncrementMinutes * 60
+
+        return ActiveSessionResult(
+            remainingSeconds: min(
+                safeRemainingSeconds + additionalSeconds,
+                DurationFormatting.maximumSeconds
+            ),
+            plannedDurationSeconds: min(
+                max(plannedDurationSeconds, 0),
+                DurationFormatting.maximumSeconds
+            )
         )
     }
 

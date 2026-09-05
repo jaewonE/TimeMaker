@@ -70,6 +70,9 @@ final class TimerStore: ObservableObject {
             allowsActiveAdjustment: settings.allowActiveTimerScrollAdjustment
         )
     }
+    var canExtendDurationByClick: Bool {
+        settings.clickExtensionEnabled && phase != .idle
+    }
     var canStart: Bool { phase != .idle || configuredSeconds > 0 }
 
     @discardableResult
@@ -121,6 +124,30 @@ final class TimerStore: ObservableObject {
             previousSeconds: adjustmentBase,
             now: now
         )
+    }
+
+    func extendCurrentSessionByClick(now: Date = Date()) {
+        guard canExtendDurationByClick else { return }
+
+        if phase == .running {
+            updateRunningState(now: now)
+        }
+        guard phase != .idle else { return }
+
+        let extensionResult = TimerAdjustment.unrecordedActiveSessionExtension(
+            remainingSeconds: remainingSeconds,
+            plannedDurationSeconds: plannedDurationSeconds,
+            incrementMinutes: settings.clickExtensionMinutes
+        )
+        guard extensionResult.remainingSeconds != remainingSeconds else { return }
+
+        remainingSeconds = extensionResult.remainingSeconds
+        plannedDurationSeconds = extensionResult.plannedDurationSeconds
+
+        if phase == .running {
+            deadline = now.addingTimeInterval(TimeInterval(extensionResult.remainingSeconds))
+        }
+        persistState()
     }
 
     private func scrollAdjustmentBase(now: Date) -> Int? {

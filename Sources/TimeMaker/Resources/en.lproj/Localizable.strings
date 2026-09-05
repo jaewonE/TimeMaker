@@ -22,6 +22,8 @@
 "timer.remaining" = "Time remaining";
 "timer.scrollHint" = "Scroll up or down to adjust";
 "timer.runningHint" = "Enable active-timer scroll adjustment in Settings to change this timer";
+"timer.clickHint" = "Click to add %d min without adding it to analytics";
+"timer.clickAction" = "Add the configured click-extension time";
 
 "progress.today" = "Today's focus progress";
 "progress.value" = "%d hours %d minutes";
@@ -55,6 +57,11 @@
 "settings.labels.title" = "Labels & history";
 "settings.system.title" = "System";
 "settings.appearance.title" = "Appearance";
+"settings.clickExtensionEnabled" = "Extend active timers by clicking";
+"settings.clickExtensionEnabled.description" = "Click either the minute or second value to add time. Click-added time is excluded from analytics.";
+"settings.clickExtensionMinutes" = "Click extension";
+"settings.clickExtensionMinutes.description" = "Choose how many minutes each timer click adds.";
+"settings.clickExtensionMinutes.value" = "%d min";
 "settings.scrollStep" = "Scroll increment";
 "settings.scrollStep.description" = "Choose how many minutes or seconds change after an accepted scroll.";
 "settings.scrollStep.value" = "%d";

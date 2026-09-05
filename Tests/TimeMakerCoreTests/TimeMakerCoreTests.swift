@@ -147,6 +147,67 @@ final class TimeMakerCoreTests: XCTestCase {
         )
     }
 
+    func testClickExtensionDefaultsToOneMinuteAndIsEnabled() {
+        XCTAssertTrue(TimerClickExtensionPolicy.defaultEnabled)
+        XCTAssertEqual(TimerClickExtensionPolicy.defaultMinutes, 1)
+        XCTAssertEqual(TimerClickExtensionPolicy.clampedMinutes(0), 1)
+        XCTAssertEqual(TimerClickExtensionPolicy.clampedMinutes(61), 60)
+    }
+
+    func testClickExtensionAddsRemainingTimeWithoutChangingRecordedDuration() {
+        var result = TimerAdjustment.ActiveSessionResult(
+            remainingSeconds: 35 * 60,
+            plannedDurationSeconds: 40 * 60
+        )
+
+        for _ in 0..<5 {
+            result = TimerAdjustment.unrecordedActiveSessionExtension(
+                remainingSeconds: result.remainingSeconds,
+                plannedDurationSeconds: result.plannedDurationSeconds,
+                incrementMinutes: 1
+            )
+        }
+
+        XCTAssertEqual(result.remainingSeconds, 40 * 60)
+        XCTAssertEqual(result.plannedDurationSeconds, 40 * 60)
+    }
+
+    func testScrollAdjustmentStillChangesRecordedDurationAfterClickExtension() {
+        let clickResult = TimerAdjustment.unrecordedActiveSessionExtension(
+            remainingSeconds: 35 * 60,
+            plannedDurationSeconds: 40 * 60,
+            incrementMinutes: 5
+        )
+        let scrolledRemainingSeconds = TimerAdjustment.minutes(
+            in: clickResult.remainingSeconds,
+            direction: .increase,
+            step: 10
+        )
+        let scrollResult = TimerAdjustment.activeSession(
+            requestedRemainingSeconds: scrolledRemainingSeconds,
+            previousRemainingSeconds: clickResult.remainingSeconds,
+            plannedDurationSeconds: clickResult.plannedDurationSeconds,
+            elapsedSeconds: 5 * 60
+        )
+
+        XCTAssertEqual(scrollResult.remainingSeconds, 50 * 60)
+        XCTAssertEqual(scrollResult.plannedDurationSeconds, 50 * 60)
+    }
+
+    func testClickExtensionStopsAtMaximumWithoutChangingRecordedDuration() {
+        XCTAssertEqual(
+            TimerAdjustment.unrecordedActiveSessionExtension(
+                remainingSeconds: DurationFormatting.maximumSeconds - 30,
+                plannedDurationSeconds: 40 * 60,
+                incrementMinutes: 1
+            ),
+            TimerAdjustment.ActiveSessionResult(
+                remainingSeconds: DurationFormatting.maximumSeconds,
+                plannedDurationSeconds: 40 * 60
+            )
+        )
+    }
+
     func testProgressDotsUseAtMostEightVerticalRows() {
         XCTAssertEqual(ProgressDotLayout.rowCount(for: 24), 8)
         XCTAssertEqual(ProgressDotLayout.columnCount(for: 24), 3)

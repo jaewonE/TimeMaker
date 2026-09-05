@@ -277,6 +277,8 @@ struct MainTimerView: View {
                 )
             ) { direction in
                 timer.adjustMinutes(direction: direction, step: settings.scrollStep)
+            } onClick: {
+                timer.extendCurrentSessionByClick()
             }
 
             Text(":")
@@ -292,6 +294,8 @@ struct MainTimerView: View {
                 )
             ) { direction in
                 timer.adjustSeconds(direction: direction, step: settings.scrollStep)
+            } onClick: {
+                timer.extendCurrentSessionByClick()
             }
         }
         .lineLimit(1)
@@ -300,6 +304,9 @@ struct MainTimerView: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("timer.remaining"))
         .accessibilityValue(Text(timer.displayText))
+        .accessibilityAction(named: Text("timer.clickAction")) {
+            timer.extendCurrentSessionByClick()
+        }
     }
 
     private var timerFont: Font {
@@ -310,7 +317,8 @@ struct MainTimerView: View {
         _ value: String,
         accessibilityLabel: LocalizedStringKey,
         thresholdMultiplier: Double,
-        onScroll: @escaping (ScrollDirection) -> Void
+        onScroll: @escaping (ScrollDirection) -> Void,
+        onClick: @escaping () -> Void
     ) -> some View {
         Text(value)
             .font(timerFont)
@@ -319,13 +327,25 @@ struct MainTimerView: View {
             .overlay {
                 ScrollWheelMonitor(
                     enabled: timer.canAdjustDurationByScrolling,
+                    clickEnabled: timer.canExtendDurationByClick,
                     thresholdMultiplier: thresholdMultiplier,
-                    onScroll: onScroll
+                    onScroll: onScroll,
+                    onClick: onClick
                 )
             }
-            .help(timer.canAdjustDurationByScrolling ? Text("timer.scrollHint") : Text("timer.runningHint"))
+            .help(timerHelpText)
             .accessibilityLabel(Text(accessibilityLabel))
             .accessibilityValue(Text(value))
+    }
+
+    private var timerHelpText: Text {
+        if timer.canExtendDurationByClick {
+            return Text(String(
+                format: NSLocalizedString("timer.clickHint", comment: ""),
+                settings.clickExtensionMinutes
+            ))
+        }
+        return timer.canAdjustDurationByScrolling ? Text("timer.scrollHint") : Text("timer.runningHint")
     }
 
     private var startPauseButton: some View {

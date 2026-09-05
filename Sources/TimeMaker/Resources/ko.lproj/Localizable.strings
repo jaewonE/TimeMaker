@@ -22,6 +22,8 @@
 "timer.remaining" = "남은 시간";
 "timer.scrollHint" = "위아래로 스크롤하여 조절";
 "timer.runningHint" = "이 타이머의 시간을 바꾸려면 설정에서 활성 타이머 스크롤 조정을 켜십시오";
+"timer.clickHint" = "클릭하여 분석 기록에 포함되지 않는 시간 %d분 추가";
+"timer.clickAction" = "설정한 클릭 추가 시간 적용";
 
 "progress.today" = "오늘의 집중 진행도";
 "progress.value" = "%d시간 %d분";
@@ -55,6 +57,11 @@
 "settings.labels.title" = "라벨 및 기록";
 "settings.system.title" = "시스템";
 "settings.appearance.title" = "화면";
+"settings.clickExtensionEnabled" = "클릭으로 활성 타이머 연장";
+"settings.clickExtensionEnabled.description" = "분 또는 초 숫자를 클릭하여 시간을 추가합니다. 클릭으로 추가한 시간은 분석 기록에서 제외됩니다.";
+"settings.clickExtensionMinutes" = "클릭 추가 시간";
+"settings.clickExtensionMinutes.description" = "타이머를 한 번 클릭할 때 추가할 분을 정합니다.";
+"settings.clickExtensionMinutes.value" = "%d분";
 "settings.scrollStep" = "스크롤 단위";
 "settings.scrollStep.description" = "인식된 한 번의 스크롤마다 타이머 숫자를 몇 칸 이동할지 정합니다.";
 "settings.scrollStep.value" = "%d";

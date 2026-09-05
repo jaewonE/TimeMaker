@@ -10,6 +10,8 @@ final class SettingsStore: ObservableObject {
     @Published private(set) var scrollStep: Int
     @Published private(set) var scrollSensitivity: ScrollSensitivity
     @Published private(set) var allowActiveTimerScrollAdjustment: Bool
+    @Published private(set) var clickExtensionEnabled: Bool
+    @Published private(set) var clickExtensionMinutes: Int
     @Published private(set) var launchAtLogin: Bool
     @Published private(set) var hideWindowOnStart: Bool
     @Published private(set) var countCancelledTimerTime: Bool
@@ -24,6 +26,8 @@ final class SettingsStore: ObservableObject {
         static let scrollStep = "settings.scrollStep"
         static let scrollSensitivity = "settings.scrollSensitivity"
         static let allowActiveTimerScrollAdjustment = "settings.allowActiveTimerScrollAdjustment"
+        static let clickExtensionEnabled = "settings.clickExtensionEnabled"
+        static let clickExtensionMinutes = "settings.clickExtensionMinutes"
         static let legacyScrollDistance = "settings.scrollDistance"
         static let launchAtLogin = "settings.launchAtLogin"
         static let hideWindowOnStart = "settings.hideWindowOnStart"
@@ -55,6 +59,8 @@ final class SettingsStore: ObservableObject {
             Key.scrollSensitivity: ScrollSensitivity.one.rawValue,
             Key.allowActiveTimerScrollAdjustment:
                 TimerScrollAdjustmentPolicy.defaultAllowsActiveAdjustment,
+            Key.clickExtensionEnabled: TimerClickExtensionPolicy.defaultEnabled,
+            Key.clickExtensionMinutes: TimerClickExtensionPolicy.defaultMinutes,
             Key.launchAtLogin: true,
             Key.hideWindowOnStart: true,
             Key.countCancelledTimerTime: false,
@@ -76,6 +82,10 @@ final class SettingsStore: ObservableObject {
         }
         allowActiveTimerScrollAdjustment = defaults.bool(
             forKey: Key.allowActiveTimerScrollAdjustment
+        )
+        clickExtensionEnabled = defaults.bool(forKey: Key.clickExtensionEnabled)
+        clickExtensionMinutes = TimerClickExtensionPolicy.clampedMinutes(
+            defaults.integer(forKey: Key.clickExtensionMinutes)
         )
         launchAtLogin = defaults.bool(forKey: Key.launchAtLogin)
         hideWindowOnStart = defaults.bool(forKey: Key.hideWindowOnStart)
@@ -111,6 +121,16 @@ final class SettingsStore: ObservableObject {
     func updateAllowActiveTimerScrollAdjustment(_ enabled: Bool) {
         allowActiveTimerScrollAdjustment = enabled
         defaults.set(enabled, forKey: Key.allowActiveTimerScrollAdjustment)
+    }
+
+    func updateClickExtensionEnabled(_ enabled: Bool) {
+        clickExtensionEnabled = enabled
+        defaults.set(enabled, forKey: Key.clickExtensionEnabled)
+    }
+
+    func updateClickExtensionMinutes(_ value: Int) {
+        clickExtensionMinutes = TimerClickExtensionPolicy.clampedMinutes(value)
+        defaults.set(clickExtensionMinutes, forKey: Key.clickExtensionMinutes)
     }
 
     func updateLaunchAtLogin(_ enabled: Bool) {

@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.1.1 — 2026-09-05
+
+### English
+
+- Added a default-on setting that lets each click on either timer number extend the active timer by a configurable 1–60 minutes.
+- Kept click-added time out of Analytics while preserving the existing behavior where active scroll adjustments change the recorded duration.
+
+### 한국어
+
+- 실행 중이거나 일시정지된 타이머의 분 또는 초 숫자를 클릭할 때마다 설정한 1~60분을 추가하는 기본값 켜짐 설정을 추가했습니다.
+- 클릭으로 추가한 시간은 분석 기록에서 제외하고, 활성 타이머를 스크롤로 조정한 시간은 기존처럼 기록 시간에 반영합니다.
+
 ## 1.1 — 2026-08-30
 
 ### English

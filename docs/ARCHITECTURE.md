@@ -13,7 +13,9 @@ TimeMaker is a menu-bar-only app (`LSUIElement`) composed of native macOS framew
 
 ## Timer state flow
 
-`TimerStore` is the single source of truth for idle, running, and paused state. A running timer stores a deadline instead of decrementing a counter as its authoritative time source. The 250 ms UI ticker derives the displayed whole seconds from that deadline. This prevents drift and lets the timer recover after display sleep, system sleep, or process restart. Minute adjustment is clamped at the supported bounds. `ScrollWheelMonitor` accumulates physical movement using one of six discrete sensitivity choices (0.5×, 1×, 2×, 3×, 4×, or 5×), then applies the separately configured timer increment. Minutes apply an additional 2× sensitivity. Idle adjustment remains always available; the default-off active-timer setting additionally allows scroll changes while running or paused. An active change updates the running deadline or paused remainder and adjusts only the current session's planned duration.
+`TimerStore` is the single source of truth for idle, running, and paused state. A running timer stores a deadline instead of decrementing a counter as its authoritative time source. The 250 ms UI ticker derives the displayed whole seconds from that deadline. This prevents drift and lets the timer recover after display sleep, system sleep, or process restart. Minute adjustment is clamped at the supported bounds. `ScrollWheelMonitor` accumulates physical movement using one of six discrete sensitivity choices (0.5×, 1×, 2×, 3×, 4×, or 5×), then applies the separately configured timer increment. Minutes apply an additional 2× sensitivity. Idle adjustment remains always available; the default-off active-timer setting additionally allows scroll changes while running or paused. An active scroll change updates the running deadline or paused remainder and the current session's recorded planned duration.
+
+The same AppKit monitor accepts clicks on either the minute or second number while a timer is active. The default-on click-extension setting adds a configurable 1–60 minutes to the running deadline or paused remainder. This path deliberately preserves `plannedDurationSeconds`, so click-added time is excluded from completed-session and cancelled-time Analytics. Scroll adjustment remains a separate path and continues to change `plannedDurationSeconds` by its accepted delta.
 
 The persisted state contains:
 
@@ -21,7 +23,8 @@ The persisted state contains:
 - remaining time for paused sessions;
 - deadline for running sessions;
 - activity label and original session start;
-- active time accumulated before pauses.
+- active time accumulated before pauses;
+- recorded planned duration, kept separate from click-extended remaining time.
 
 On completion, the store records exactly one session, optionally sends a native notification, resets the countdown to the configured duration, and retains the last label. When sound is enabled it plays the built-in `Glass.aiff` chime directly; clicking the notification reopens the timer window. A user reset also returns to the configured duration; its elapsed active time is written as a session only when the related setting is enabled.
 
